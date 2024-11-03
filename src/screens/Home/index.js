@@ -87,7 +87,7 @@ const Home = () => {
         onClose={_triggerSaveModal}
         onSave={_handleSave}
       />
-      <View style={styles.infoContainer}>
+      <View style={styles.infoContainer} pointerEvents='none'>
         <Text style={styles.info(theme)}>
           {date.getHijriDate()} | {date.getTodayDate()}
         </Text>

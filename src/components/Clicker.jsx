@@ -1,13 +1,15 @@
 import React, {useRef} from 'react';
 import {Animated, StyleSheet, TouchableOpacity} from 'react-native';
-import themes from '../utils/themes';
-import BouncingText from './BouncingText';
-import {useLocalContext} from './context';
 import animation from '../utils/animation';
+import themes from '../utils/themes';
+import {useLocalContext} from './context';
+import Text from './Text';
+import {OpenSelectHandGesture} from 'iconoir-react-native';
 
 const Clicker = ({onPress = () => {}, showMore = false}) => {
   const {theme, currentData} = useLocalContext();
   const animationValue = useRef(new Animated.Value(0)).current;
+  const infoAnimValue = useRef(new Animated.Value(1)).current;
 
   const _handleAnimation = () => {
     animation.bounce({
@@ -18,8 +20,20 @@ const Clicker = ({onPress = () => {}, showMore = false}) => {
     });
   };
 
+  const _startInfoAnimation = () => {
+    animation.timing({
+      animationValue: infoAnimValue,
+      toValue: 0,
+      duration: 1500,
+      useNativeDriver: true,
+    });
+  };
+
   const _handleClick = () => {
     if (onPress && typeof onPress === 'function') {
+      if (currentData?.count === 0) {
+        _startInfoAnimation();
+      }
       onPress();
       if (!showMore) {
         _handleAnimation();
@@ -42,6 +56,14 @@ const Clicker = ({onPress = () => {}, showMore = false}) => {
         numberOfLines={1}>
         {currentData?.count}
       </Animated.Text>
+      <Animated.View style={styles.infoWrapper(infoAnimValue)}>
+        <Text style={styles.info(theme)}>Tap anywhere to start</Text>
+        <OpenSelectHandGesture
+          color={themes[theme]?.infoText}
+          width={20}
+          height={20}
+        />
+      </Animated.View>
     </TouchableOpacity>
   );
 };
@@ -63,6 +85,20 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     color: themes[theme]?.counterText,
     textAlign: 'center',
+  }),
+  infoWrapper: (opacity = 1) => ({
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+    opacity,
+  }),
+  info: theme => ({
+    color: themes[theme]?.infoText,
+    fontSize: 16,
+    textAlign: 'center',
+    lineHeight: 24,
+    fontWeight: '400',
+    marginRight: 10,
   }),
 });
 

@@ -1,7 +1,13 @@
-import {useRef} from 'react';
 import {Animated, Easing} from 'react-native';
 
 export default {
+  timing: function ({animationValue, duration = 2000}) {
+    Animated.timing(animationValue, {
+      toValue: 0,
+      duration,
+      useNativeDriver: true,
+    }).start();
+  },
   moveAndFade: function ({type, animation, opacity, offset, duration = 200}) {
     Animated.parallel([
       Animated.timing(animation, {

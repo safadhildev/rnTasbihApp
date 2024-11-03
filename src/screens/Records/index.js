@@ -1,7 +1,13 @@
 import {useNavigation} from '@react-navigation/native';
 import {ArrowDown, ArrowUp, Edit, Search, Sort} from 'iconoir-react-native';
-import React, {Fragment, useEffect, useState} from 'react';
-import {FlatList, StyleSheet, TouchableOpacity, View} from 'react-native';
+import React, {Fragment, useEffect, useRef, useState} from 'react';
+import {
+  BackHandler,
+  FlatList,
+  StyleSheet,
+  TouchableOpacity,
+  View,
+} from 'react-native';
 import BackgroundView from '../../components/BackgroundView';
 import Button, {BUTTON_TYPE} from '../../components/Button';
 import {DIRECTION, SORT_OPTIONS, SORT_ORDER} from '../../components/constants';
@@ -18,6 +24,7 @@ import useGlobalFucntion from '../../utils/hooks/useGlobal';
 import themes from '../../utils/themes';
 import {zikirOptions} from '../../utils/zikir';
 import ListHeaderComponent from './ListHeaderComponent';
+import Checkbox from '../../components/Checkbox';
 
 const Records = () => {
   const navigation = useNavigation();
@@ -27,9 +34,11 @@ const Records = () => {
   const [records, setRecords] = useState([]);
   const [edit, setEdit] = useState(null);
   const [idToDelete, setIdToDelete] = useState(null);
-  const [showSortModal, setShowSortModal] = useState(false);
   const [updateLoading, setUpdateLoading] = useState(false);
-  const [sortButtonLayout, setSortButtonLayout] = useState(null);
+
+  const [selectMode, setSelectMode] = useState(false);
+  const [selectedIds, setSelectedIds] = useState([]);
+  const [itemWidth, setItemWidth] = useState(0);
 
   const getRecords = async searchValue => {
     try {
@@ -52,24 +61,20 @@ const Records = () => {
     }
   };
 
+  const _handleSelectAll = () => {
+    console.log('[DEBUG] >> selectAll ');
+    if (selectedIds?.length === records?.length) {
+      // Deselect All
+      console.log('[DEBUG] >> selectAll >> deselectAll ');
+      setSelectedIds([]);
+    } else {
+      console.log('[DEBUG] >> selectAll >> selectAll ');
+      setSelectedIds(records?.map(item => item?.id));
+    }
+  };
+
   const _onChangeSearchValue = async value => {
     await getRecords(value);
-  };
-
-  const _triggerSortOrder = () => {
-    updateContext({
-      sort: {
-        ...sort,
-        order:
-          sort?.order === SORT_ORDER.DESC ? SORT_ORDER.ASC : SORT_ORDER.DESC,
-      },
-    });
-  };
-
-  const _triggerSortModal = () => {
-    setEdit(null);
-    setIdToDelete(null);
-    setShowSortModal(!showSortModal);
   };
 
   const _handleUpdate = async ({id, data}) => {
@@ -90,7 +95,9 @@ const Records = () => {
   };
 
   const _handleBack = () => {
-    if (navigation.canGoBack()) {
+    if (selectMode) {
+      setSelectMode(false);
+    } else if (navigation.canGoBack()) {
       navigation.goBack();
     }
   };
@@ -99,6 +106,28 @@ const Records = () => {
     getRecords();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [sort]);
+
+  useEffect(() => {
+    setSelectMode(false);
+    setSelectedIds([]);
+  }, []);
+
+  useEffect(() => {
+    const _handleBackPress = () => {
+      if (selectMode) {
+        setSelectMode(false);
+        return true;
+      }
+      return false;
+    };
+
+    if (selectMode) {
+      BackHandler.addEventListener('hardwareBackPress', _handleBackPress);
+
+      return () =>
+        BackHandler.removeEventListener('hardwareBackPress', _handleBackPress);
+    }
+  }, [selectMode]);
 
   const _renderItem = ({item, index}) => {
     const _onEdit = () => {
@@ -125,36 +154,81 @@ const Records = () => {
       return title;
     };
 
+    const getChecked = () => {
+      if (selectedIds?.length === records.length) {
+        return true;
+      }
+
+      const found = selectedIds?.find(id => item.id === id);
+      return !!found;
+    };
+
+    const _onCheckItem = () => {
+      console.log('[DEBUG] _onCheckItem >> ', {isChecked: getChecked()});
+      if (getChecked()) {
+        setSelectedIds(prev => prev.filter(id => id !== item.id));
+        // selectedIds.current = selectedIds.current.filter(id => id !== item.id);
+      } else {
+        setSelectedIds([...selectedIds, item.id]);
+        // selectedIds.current = [...selectedIds.current, item.id];
+      }
+    };
+
+    const isFirstItem = () => index === 0;
+
     return (
-      <BackgroundView
-        key={index}
-        backgroundColor={themes[theme]?.listItemBackground}
-        containerStyle={[styles.itemWrapper, index === 0 && {marginTop: 20}]}
-        opacity={0.5}>
-        <View style={styles.item(theme)}>
-          <View style={styles.infoWrapper}>
-            <Text style={styles.count(theme)}>{item?.count}</Text>
-            <Text style={styles.title(theme)}>{getTitle()}</Text>
-            <Text style={styles.date(theme)}>
-              {item?.hijriDate} | {item?.date}
-            </Text>
-          </View>
-          <Gap size={20} direction={DIRECTION.HORIZONTAL} />
-          <View style={styles.countWrapper}>
-            <Button
-              onPress={_onEdit}
-              icon={
-                <Edit
-                  color={themes[theme]?.primaryButtonText}
-                  opacity={0.5}
-                  width={24}
-                  height={24}
-                />
+      <View
+        style={[styles.itemContainer, isFirstItem() && {marginTop: 20}, selectMode &&{marginRight: -20}]}>
+        {selectMode && (
+          <TouchableOpacity
+            style={styles.itemSelect(isFirstItem())}
+            onPress={_onCheckItem}
+          />
+        )}
+        {selectMode && <Checkbox checked={getChecked()} size={24} />}
+        <BackgroundView
+          key={index}
+          backgroundColor={themes[theme]?.listItemBackground}
+          containerStyle={[styles.itemWrapper]}
+          opacity={0.5}>
+          <TouchableOpacity
+            activeOpacity={1}
+            onLongPress={() => {
+              if (!selectMode) {
+                setSelectMode(true);
+                _onCheckItem();
               }
-            />
-          </View>
-        </View>
-      </BackgroundView>
+            }}>
+            <View style={styles.item(theme)}>
+              <View style={styles.infoWrapper}>
+                <Text style={styles.count(theme)}>{item?.count}</Text>
+                <Text style={styles.title(theme)}>{getTitle()}</Text>
+                <Text style={styles.date(theme)}>
+                  {item?.hijriDate} | {item?.date}
+                </Text>
+              </View>
+              <Gap size={20} direction={DIRECTION.HORIZONTAL} />
+              <View style={styles.countWrapper}>
+                <Button
+                  onPress={_onEdit}
+                  icon={
+                    <Edit
+                      color={themes[theme]?.primaryButtonText}
+                      opacity={0.5}
+                      width={24}
+                      height={24}
+                    />
+                  }
+                  style={{
+                    minWidth: 50,
+                    minHeight: 50,
+                  }}
+                />
+              </View>
+            </View>
+          </TouchableOpacity>
+        </BackgroundView>
+      </View>
     );
   };
 
@@ -166,12 +240,15 @@ const Records = () => {
           onStartShouldSetResponder={() => true}
           data={records}
           renderItem={_renderItem}
-          contentContainerStyle={styles.listWrapper}
+          contentContainerStyle={styles.listWrapper(selectMode)}
           scrollEnabled
           ListHeaderComponent={
             <ListHeaderComponent
+              total={records?.length}
               onChangeSearchValue={_onChangeSearchValue}
-              onTriggerSortModal={_triggerSortModal}
+              selectMode={selectMode}
+              selectedIds={selectedIds}
+              onSelectAll={_handleSelectAll}
             />
           }
           ListEmptyComponent={
@@ -250,13 +327,9 @@ const styles = StyleSheet.create({
     // position: 'relative',
     backgroundColor: themes[theme]?.background,
   }),
-  inputWrapper: theme => ({
-    backgroundColor: themes[theme]?.background,
-    // paddingBottom: 20,
-  }),
   countWrapper: {
     // height: '100%',
-    justifyContent: 'flex-end',
+    justifyContent: 'center',
   },
   count: theme => ({
     color: themes[theme]?.listItemTextPrimary,
@@ -280,16 +353,33 @@ const styles = StyleSheet.create({
     textAlign: 'left',
     opacity: 0.5,
   }),
-  listWrapper: {
-    paddingHorizontal: 20,
-    paddingBottom: 50,
+  listWrapper: selectMode => ({
     paddingTop: 20,
-  },
+    paddingRight: 20,
+    paddingBottom: 50,
+    paddingLeft: 20,
+  }),
   itemWrapper: {
-    marginVertical: 5,
     borderRadius: 10,
   },
+  itemContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 20,
+    position: 'relative',
+    marginVertical: 5,
+  },
+  itemSelect: isFirstItem => ({
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    zIndex: 2,
+    borderRadius: 10,
+  }),
   item: theme => ({
+    flex: 1,
     paddingVertical: 10,
     paddingHorizontal: 15,
     flexDirection: 'row',
