@@ -31,7 +31,7 @@ const themes = {
     inputText: '#ECF0F1',
   },
   [THEME_CONSTANT.lime]: {
-    barStyle: 'dark-content',
+    barStyle: 'dark-content', 
     background: '#FAFAFA',
     infoText: '#4CAF50',
     primaryButtonBackground: '#66BB6A',
@@ -66,8 +66,8 @@ const themes = {
     success: '#2ECC71',
     listItemTextPrimary: '#79675c',
     inputText: '#6c584c',
-    secondaryButtonBackground: '#C0392B',
-    secondaryButtontext: '#E74C3C',
+    secondaryButtonBackground: '#EF5350',
+    secondaryButtontext: '#FFCDD2',
     error: '#E74C3C',
   },
 };

@@ -18,8 +18,7 @@ const ListHeaderComponent = ({
   selectedIds = [],
   onSelectAll = () => {},
 }) => {
-  console.log('[DEBUG] >> ', {selectedIds, total});
-  const {theme, sort, updateContext, currentData} = useLocalContext();
+  const {theme, sort, updateContext} = useLocalContext();
 
   const [sortButtonLayout, setSortButtonLayout] = useState(null);
   const [showSortModal, setShowSortModal] = useState(false);
@@ -179,6 +178,7 @@ const ListHeaderComponent = ({
 const styles = StyleSheet.create({
   inputWrapper: theme => ({
     backgroundColor: themes[theme]?.background,
+    paddingHorizontal: 20,
     // paddingBottom: 20,
   }),
   countWrapper: {

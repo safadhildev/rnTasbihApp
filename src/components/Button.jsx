@@ -135,7 +135,7 @@ const styles = StyleSheet.create({
     color:
       type === BUTTON_TYPE.PRIMARY
         ? themes[theme]?.primaryButtonText
-        : themes[theme]?.inputText,
+        : themes[theme]?.secondaryButtonBackground,
     paddingHorizontal: 10,
     ...Platform.select({
       android: {

@@ -1,6 +1,6 @@
 import {useNavigation} from '@react-navigation/native';
-import {ArrowDown, ArrowUp, Edit, Search, Sort} from 'iconoir-react-native';
-import React, {Fragment, useEffect, useRef, useState} from 'react';
+import {Edit, Trash} from 'iconoir-react-native';
+import React, {useEffect, useState} from 'react';
 import {
   BackHandler,
   FlatList,
@@ -10,12 +10,12 @@ import {
 } from 'react-native';
 import BackgroundView from '../../components/BackgroundView';
 import Button, {BUTTON_TYPE} from '../../components/Button';
-import {DIRECTION, SORT_OPTIONS, SORT_ORDER} from '../../components/constants';
+import Checkbox from '../../components/Checkbox';
+import {DIRECTION} from '../../components/constants';
 import {useLocalContext} from '../../components/context';
 import Divider from '../../components/Divider';
 import Gap from '../../components/Gap';
 import Header from '../../components/Header';
-import Input from '../../components/Input';
 import Modal from '../../components/Modal';
 import SaveModal from '../../components/SaveModal';
 import Text from '../../components/Text';
@@ -24,12 +24,12 @@ import useGlobalFucntion from '../../utils/hooks/useGlobal';
 import themes from '../../utils/themes';
 import {zikirOptions} from '../../utils/zikir';
 import ListHeaderComponent from './ListHeaderComponent';
-import Checkbox from '../../components/Checkbox';
 
 const Records = () => {
   const navigation = useNavigation();
-  const {theme, sort, updateContext} = useLocalContext();
-  const {onUpdateCount, getSavedRecords, onDelete} = useGlobalFucntion();
+  const {theme, sort} = useLocalContext();
+  const {onUpdateCount, getSavedRecords, onDelete, onMultiDelete} =
+    useGlobalFucntion();
 
   const [records, setRecords] = useState([]);
   const [edit, setEdit] = useState(null);
@@ -38,13 +38,26 @@ const Records = () => {
 
   const [selectMode, setSelectMode] = useState(false);
   const [selectedIds, setSelectedIds] = useState([]);
-  const [itemWidth, setItemWidth] = useState(0);
+  const [showMultiDeleteConfirmation, setShowMultiDeleteConfirmation] =
+    useState(false);
 
   const getRecords = async searchValue => {
     try {
       const data = await getSavedRecords(searchValue);
       const sortedData = onSort(data, sort?.by, sort?.order);
       setRecords(sortedData);
+    } catch (e) {
+      console.error(e);
+    }
+  };
+
+  const _handleMultiDeleteRecords = async () => {
+    try {
+      await onMultiDelete(selectedIds);
+      setSelectedIds([]);
+      setShowMultiDeleteConfirmation(false);
+      setSelectMode(false);
+      await getRecords();
     } catch (e) {
       console.error(e);
     }
@@ -62,13 +75,11 @@ const Records = () => {
   };
 
   const _handleSelectAll = () => {
-    console.log('[DEBUG] >> selectAll ');
     if (selectedIds?.length === records?.length) {
       // Deselect All
-      console.log('[DEBUG] >> selectAll >> deselectAll ');
       setSelectedIds([]);
     } else {
-      console.log('[DEBUG] >> selectAll >> selectAll ');
+      // Select All
       setSelectedIds(records?.map(item => item?.id));
     }
   };
@@ -99,6 +110,17 @@ const Records = () => {
       setSelectMode(false);
     } else if (navigation.canGoBack()) {
       navigation.goBack();
+    }
+  };
+
+  const _handleHeaderCtaPress = action => {
+    switch (action) {
+      case 'select':
+        setSelectMode(!selectMode);
+        setSelectedIds([]);
+        break;
+      default:
+        break;
     }
   };
 
@@ -164,7 +186,6 @@ const Records = () => {
     };
 
     const _onCheckItem = () => {
-      console.log('[DEBUG] _onCheckItem >> ', {isChecked: getChecked()});
       if (getChecked()) {
         setSelectedIds(prev => prev.filter(id => id !== item.id));
         // selectedIds.current = selectedIds.current.filter(id => id !== item.id);
@@ -178,7 +199,11 @@ const Records = () => {
 
     return (
       <View
-        style={[styles.itemContainer, isFirstItem() && {marginTop: 20}, selectMode &&{marginRight: -20}]}>
+        style={[
+          styles.itemContainer,
+          isFirstItem() && {marginTop: 20},
+          selectMode && {marginRight: -20},
+        ]}>
         {selectMode && (
           <TouchableOpacity
             style={styles.itemSelect(isFirstItem())}
@@ -192,7 +217,7 @@ const Records = () => {
           containerStyle={[styles.itemWrapper]}
           opacity={0.5}>
           <TouchableOpacity
-            activeOpacity={1}
+            activeOpacity={0.8}
             onLongPress={() => {
               if (!selectMode) {
                 setSelectMode(true);
@@ -234,7 +259,12 @@ const Records = () => {
 
   return (
     <View style={styles.container(theme)}>
-      <Header text="Records" onBack={_handleBack} />
+      <Header
+        text="Records"
+        onBack={_handleBack}
+        options={[{value: 'select', label: 'Select'}]}
+        onCtaPress={_handleHeaderCtaPress}
+      />
       <View style={{flex: 1}}>
         <FlatList
           onStartShouldSetResponder={() => true}
@@ -276,6 +306,21 @@ const Records = () => {
           stickyHeaderIndices={[0]}
         />
       </View>
+      {selectedIds?.length > 0 && (
+        <Button
+          onPress={() => {
+            setShowMultiDeleteConfirmation(true);
+          }}
+          style={styles.deleteButton(theme)}
+          icon={
+            <Trash
+              color={themes[theme]?.secondaryButtontext}
+              width={24}
+              height={24}
+            />
+          }
+        />
+      )}
 
       {/* SAVE */}
       <SaveModal
@@ -290,30 +335,44 @@ const Records = () => {
 
       {/* DELETE */}
       <Modal
-        isVisible={idToDelete !== null}
-        title="Delete Record?"
+        isVisible={idToDelete !== null || showMultiDeleteConfirmation}
+        title={
+          showMultiDeleteConfirmation
+            ? 'Delete Selected Records?'
+            : 'Delete Record?'
+        }
         onClose={() => {
           setIdToDelete(null);
+          setShowMultiDeleteConfirmation(false);
         }}>
         <View style={{flex: 1}}>
-          <Text>Are you sure you want to delete this record?</Text>
+          <Text>
+            {showMultiDeleteConfirmation
+              ? 'All selected records will be permanently deleted.'
+              : 'This record will be permanently deleted.'}
+          </Text>
         </View>
         <Gap size={20} direction={DIRECTION.VERTICAL} />
         <View style={{flexDirection: 'row'}}>
           <Button
             text="Delete"
-            onPress={_handleDeleteRecord}
+            onPress={() =>
+              selectMode ? _handleMultiDeleteRecords() : _handleDeleteRecord()
+            }
             type={BUTTON_TYPE.SECONDARY}
             style={{flex: 1}}
-            textStyle={{color: themes[theme]?.secondaryButtontext}}
           />
           <Button
             text="Cancel"
             onPress={() => {
-              setIdToDelete(null);
+              if (showMultiDeleteConfirmation) {
+                setShowMultiDeleteConfirmation(false);
+              } else {
+                setIdToDelete(null);
+              }
             }}
             type={BUTTON_TYPE.PRIMARY}
-            style={{flex: 3}}
+            style={{flex: 2}}
           />
         </View>
       </Modal>
@@ -355,9 +414,9 @@ const styles = StyleSheet.create({
   }),
   listWrapper: selectMode => ({
     paddingTop: 20,
-    paddingRight: 20,
     paddingBottom: 50,
-    paddingLeft: 20,
+    // paddingRight: 20,
+    // paddingLeft: 20,
   }),
   itemWrapper: {
     borderRadius: 10,
@@ -368,6 +427,7 @@ const styles = StyleSheet.create({
     gap: 20,
     position: 'relative',
     marginVertical: 5,
+    marginHorizontal: 20,
   },
   itemSelect: isFirstItem => ({
     position: 'absolute',
@@ -412,6 +472,13 @@ const styles = StyleSheet.create({
     marginVertical: 20,
     flex: 1,
   },
+  deleteButton: theme => ({
+    position: 'absolute',
+    bottom: 20,
+    left: 20,
+    zIndex: 3,
+    backgroundColor: themes[theme]?.secondaryButtonBackground,
+  }),
 });
 
 export default Records;

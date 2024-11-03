@@ -41,6 +41,23 @@ const useGlobalFucntion = () => {
     return [];
   };
 
+  const _handleMultiDelete = async ids => {
+    try {
+      const savedExists = await LocalStorage.hasKey(STORAGE_KEYS.RECORDS);
+      if (savedExists) {
+        const records = await AsyncStorage.getItem(STORAGE_KEYS.RECORDS);
+        const savedData = JSON.parse(records);
+        const filteredData = savedData.filter(item => !ids.includes(item.id));
+        await AsyncStorage.setItem(
+          STORAGE_KEYS.RECORDS,
+          JSON.stringify(filteredData),
+        );
+      }
+    } catch (e) {
+      throw new Error(e);
+    }
+  };
+
   const _handleDelete = async (id = null) => {
     try {
       const savedExists = await LocalStorage.hasKey(STORAGE_KEYS.RECORDS);
@@ -140,6 +157,7 @@ const useGlobalFucntion = () => {
     onUpdateCount: _handleUpdateRecord,
     getSavedRecords: _fetchSaveRecords,
     onDelete: _handleDelete,
+    onMultiDelete: _handleMultiDelete,
     init: _init,
   };
 };
