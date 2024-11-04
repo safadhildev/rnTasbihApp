@@ -198,6 +198,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   }),
   itemText: theme => ({
+    color: themes[theme]?.inputText,
     fontSize: 16,
     textAlign: 'left',
     fontWeight: '400',

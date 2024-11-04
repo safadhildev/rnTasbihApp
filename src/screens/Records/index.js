@@ -54,9 +54,7 @@ const Records = () => {
   const _handleMultiDeleteRecords = async () => {
     try {
       await onMultiDelete(selectedIds);
-      setSelectedIds([]);
-      setShowMultiDeleteConfirmation(false);
-      setSelectMode(false);
+      _resetSelectMode();
       await getRecords();
     } catch (e) {
       console.error(e);
@@ -107,7 +105,7 @@ const Records = () => {
 
   const _handleBack = () => {
     if (selectMode) {
-      setSelectMode(false);
+      _resetSelectMode();
     } else if (navigation.canGoBack()) {
       navigation.goBack();
     }
@@ -124,20 +122,25 @@ const Records = () => {
     }
   };
 
+  const _resetSelectMode = () => {
+    setSelectedIds([]);
+    setSelectMode(false);
+    setShowMultiDeleteConfirmation(false);
+  };
+
   useEffect(() => {
     getRecords();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [sort]);
 
   useEffect(() => {
-    setSelectMode(false);
-    setSelectedIds([]);
+    _resetSelectMode();
   }, []);
 
   useEffect(() => {
     const _handleBackPress = () => {
       if (selectMode) {
-        setSelectMode(false);
+        _resetSelectMode();
         return true;
       }
       return false;
@@ -306,7 +309,7 @@ const Records = () => {
           stickyHeaderIndices={[0]}
         />
       </View>
-      {selectedIds?.length > 0 && (
+      {selectMode && selectedIds?.length > 0 && (
         <Button
           onPress={() => {
             setShowMultiDeleteConfirmation(true);
