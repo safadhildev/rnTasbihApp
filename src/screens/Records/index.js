@@ -4,14 +4,14 @@ import React, {useEffect, useState} from 'react';
 import {
   BackHandler,
   FlatList,
+  Pressable,
   StyleSheet,
   TouchableOpacity,
   View,
 } from 'react-native';
-import BackgroundView from '../../components/BackgroundView';
 import Button, {BUTTON_TYPE} from '../../components/Button';
 import Checkbox from '../../components/Checkbox';
-import {DIRECTION} from '../../components/constants';
+import {DIRECTION, HEADER_CTA} from '../../components/constants';
 import {useLocalContext} from '../../components/context';
 import Divider from '../../components/Divider';
 import Gap from '../../components/Gap';
@@ -24,6 +24,127 @@ import useGlobalFucntion from '../../utils/hooks/useGlobal';
 import themes from '../../utils/themes';
 import {zikirOptions} from '../../utils/zikir';
 import ListHeaderComponent from './ListHeaderComponent';
+
+const ListItem = ({
+  item,
+  index,
+  data,
+  edit,
+  setEdit,
+  selectedIds,
+  setSelectedIds,
+  selectMode,
+  setSelectMode,
+}) => {
+  const {theme} = useLocalContext();
+  const [isPressed, setIsPressed] = useState(false);
+
+  const _onEdit = () => {
+    setEdit(item);
+  };
+
+  const getTitle = () => {
+    let title = item?.zikir?.label;
+
+    if (title) {
+      return title;
+    }
+
+    if (item?.zikir?.value?.length > 0) {
+      const found = zikirOptions?.find(a => a?.value === item?.zikir.value);
+
+      if (found) {
+        title = found?.label;
+      }
+    } else {
+      title = 'Dhikr';
+    }
+
+    return title;
+  };
+
+  const getChecked = () => {
+    if (selectedIds?.length === data?.length) {
+      return true;
+    }
+
+    const found = selectedIds?.find(id => item.id === id);
+    return !!found;
+  };
+
+  const _onCheckItem = () => {
+    if (getChecked()) {
+      setSelectedIds(prev => prev.filter(id => id !== item.id));
+      // selectedIds.current = selectedIds.current.filter(id => id !== item.id);
+    } else {
+      setSelectedIds([...selectedIds, item.id]);
+      // selectedIds.current = [...selectedIds.current, item.id];
+    }
+  };
+
+  const isFirstItem = () => index === 0;
+
+  return (
+    <View
+      style={[
+        styles.itemContainer,
+        isFirstItem() && {marginTop: 20},
+        selectMode && {marginRight: -20},
+      ]}>
+      {selectMode && (
+        <TouchableOpacity
+          style={styles.itemSelect(isFirstItem())}
+          onPress={_onCheckItem}
+        />
+      )}
+      {selectMode && <Checkbox checked={getChecked()} size={24} />}
+
+      <Pressable
+        style={styles.itemWrapper(theme, isPressed)}
+        onPressIn={() => {
+          setIsPressed(true);
+        }}
+        onPressOut={() => {
+          setIsPressed(false);
+        }}
+        onLongPress={() => {
+          if (!selectMode) {
+            setSelectMode(true);
+            _onCheckItem();
+          }
+        }}>
+        <View style={styles.item(theme)}>
+          <View style={styles.infoWrapper}>
+            <Text style={styles.title(theme)}>{getTitle()}</Text>
+            <Text style={styles.date(theme)}>
+              {item?.hijriDate} | {item?.date}
+            </Text>
+          </View>
+          <Gap size={20} direction={DIRECTION.HORIZONTAL} />
+          <View style={styles.countWrapper}>
+            <Text style={styles.count(theme)}>{item?.count}</Text>
+            <Button
+              onPress={_onEdit}
+              icon={
+                <Edit
+                  color={themes[theme]?.primaryButtonText}
+                  opacity={0.5}
+                  width={16}
+                  height={16}
+                />
+              }
+              style={{
+                zIndex: 1,
+                minWidth: 28,
+                minHeight: 28,
+              }}
+            />
+          </View>
+        </View>
+      </Pressable>
+    </View>
+  );
+};
 
 const Records = () => {
   const navigation = useNavigation();
@@ -111,11 +232,15 @@ const Records = () => {
     }
   };
 
-  const _handleHeaderCtaPress = action => {
-    switch (action) {
+  const _handleHeaderCtaPress = subAction => {
+    const cta = subAction ? subAction : HEADER_CTA.CANCEL;
+    switch (cta) {
       case 'select':
         setSelectMode(!selectMode);
         setSelectedIds([]);
+        break;
+      case HEADER_CTA.CANCEL:
+        setSelectMode(false);
         break;
       default:
         break;
@@ -155,108 +280,20 @@ const Records = () => {
   }, [selectMode]);
 
   const _renderItem = ({item, index}) => {
-    const _onEdit = () => {
-      setEdit(item);
-    };
-
-    const getTitle = () => {
-      let title = item?.zikir?.label;
-
-      if (title) {
-        return title;
-      }
-
-      if (item?.zikir?.value?.length > 0) {
-        const found = zikirOptions?.find(a => a?.value === item?.zikir.value);
-
-        if (found) {
-          title = found?.label;
-        }
-      } else {
-        title = 'Dhikr';
-      }
-
-      return title;
-    };
-
-    const getChecked = () => {
-      if (selectedIds?.length === records.length) {
-        return true;
-      }
-
-      const found = selectedIds?.find(id => item.id === id);
-      return !!found;
-    };
-
-    const _onCheckItem = () => {
-      if (getChecked()) {
-        setSelectedIds(prev => prev.filter(id => id !== item.id));
-        // selectedIds.current = selectedIds.current.filter(id => id !== item.id);
-      } else {
-        setSelectedIds([...selectedIds, item.id]);
-        // selectedIds.current = [...selectedIds.current, item.id];
-      }
-    };
-
-    const isFirstItem = () => index === 0;
-
     return (
-      <View
-        style={[
-          styles.itemContainer,
-          isFirstItem() && {marginTop: 20},
-          selectMode && {marginRight: -20},
-        ]}>
-        {selectMode && (
-          <TouchableOpacity
-            style={styles.itemSelect(isFirstItem())}
-            onPress={_onCheckItem}
-          />
-        )}
-        {selectMode && <Checkbox checked={getChecked()} size={24} />}
-        <BackgroundView
-          key={index}
-          backgroundColor={themes[theme]?.listItemBackground}
-          containerStyle={[styles.itemWrapper]}
-          opacity={0.5}>
-          <TouchableOpacity
-            activeOpacity={0.8}
-            onLongPress={() => {
-              if (!selectMode) {
-                setSelectMode(true);
-                _onCheckItem();
-              }
-            }}>
-            <View style={styles.item(theme)}>
-              <View style={styles.infoWrapper}>
-                <Text style={styles.count(theme)}>{item?.count}</Text>
-                <Text style={styles.title(theme)}>{getTitle()}</Text>
-                <Text style={styles.date(theme)}>
-                  {item?.hijriDate} | {item?.date}
-                </Text>
-              </View>
-              <Gap size={20} direction={DIRECTION.HORIZONTAL} />
-              <View style={styles.countWrapper}>
-                <Button
-                  onPress={_onEdit}
-                  icon={
-                    <Edit
-                      color={themes[theme]?.primaryButtonText}
-                      opacity={0.5}
-                      width={24}
-                      height={24}
-                    />
-                  }
-                  style={{
-                    minWidth: 50,
-                    minHeight: 50,
-                  }}
-                />
-              </View>
-            </View>
-          </TouchableOpacity>
-        </BackgroundView>
-      </View>
+      <ListItem
+        {...{
+          item,
+          index,
+          records,
+          edit,
+          setEdit,
+          selectedIds,
+          setSelectedIds,
+          selectMode,
+          setSelectMode,
+        }}
+      />
     );
   };
 
@@ -265,7 +302,8 @@ const Records = () => {
       <Header
         text="Records"
         onBack={_handleBack}
-        options={[{value: 'select', label: 'Select'}]}
+        cta={selectMode ? HEADER_CTA.CANCEL : HEADER_CTA.MORE}
+        options={selectMode ? [] : [{value: 'select', label: 'Select'}]}
         onCtaPress={_handleHeaderCtaPress}
       />
       <View style={{flex: 1}}>
@@ -299,10 +337,17 @@ const Records = () => {
           }
           ListFooterComponent={
             records?.length > 0 && (
-              <View style={{flexDirection: 'row'}}>
-                <Divider direction="horizontal" width={0} style={{flex: 1}} />
+              <View
+                style={{
+                  flexDirection: 'row',
+                  justifyContent: 'center',
+                  opacity: 0.5,
+                }}>
+                <Divider direction="horizontal" width="20%" />
+                <Gap size={10} direction={DIRECTION.HORIZONTAL} />
                 <Text style={styles.listFooter}>End of records</Text>
-                <Divider direction="horizontal" width={0} style={{flex: 1}} />
+                <Gap size={10} direction={DIRECTION.HORIZONTAL} />
+                <Divider direction="horizontal" width="20%" />
               </View>
             )
           }
@@ -310,19 +355,22 @@ const Records = () => {
         />
       </View>
       {selectMode && selectedIds?.length > 0 && (
-        <Button
-          onPress={() => {
-            setShowMultiDeleteConfirmation(true);
-          }}
-          style={styles.deleteButton(theme)}
-          icon={
-            <Trash
-              color={themes[theme]?.secondaryButtontext}
-              width={24}
-              height={24}
-            />
-          }
-        />
+        <View style={styles.selecCtaWrapper}>
+          <Button
+            elevated
+            onPress={() => {
+              setShowMultiDeleteConfirmation(true);
+            }}
+            style={styles.deleteButton(theme)}
+            icon={
+              <Trash
+                color={themes[theme]?.secondaryButtontext}
+                width={24}
+                height={24}
+              />
+            }
+          />
+        </View>
       )}
 
       {/* SAVE */}
@@ -367,6 +415,7 @@ const Records = () => {
           />
           <Button
             text="Cancel"
+            round={false}
             onPress={() => {
               if (showMultiDeleteConfirmation) {
                 setShowMultiDeleteConfirmation(false);
@@ -391,10 +440,13 @@ const styles = StyleSheet.create({
   }),
   countWrapper: {
     // height: '100%',
+    flexDirection: 'row',
+    gap: 10,
     justifyContent: 'center',
   },
   count: theme => ({
     color: themes[theme]?.listItemTextPrimary,
+    opacity: 0.8,
     fontSize: 24,
     lineHeight: 30,
     fontWeight: 'bold',
@@ -407,13 +459,14 @@ const styles = StyleSheet.create({
     fontSize: 15,
     lineHeight: 20,
     marginVertical: 5,
+    fontWeight: '500',
   }),
   date: theme => ({
     color: themes[theme]?.listItemTextSecondary,
     fontSize: 12,
     lineHeight: 18,
     textAlign: 'left',
-    opacity: 0.5,
+    opacity: 0.7,
   }),
   listWrapper: selectMode => ({
     paddingTop: 20,
@@ -421,9 +474,13 @@ const styles = StyleSheet.create({
     // paddingRight: 20,
     // paddingLeft: 20,
   }),
-  itemWrapper: {
+  itemWrapper: (theme, isPressed) => ({
+    flex: 1,
     borderRadius: 10,
-  },
+    borderColor: 'transparent',
+    backgroundColor: themes[theme]?.listItemBackground,
+    transform: [{scale: isPressed ? 0.99 : 1}],
+  }),
   itemContainer: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -473,13 +530,18 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     opacity: 0.5,
     marginVertical: 20,
-    flex: 1,
+    // flex: 1,
   },
-  deleteButton: theme => ({
+  selecCtaWrapper: {
     position: 'absolute',
     bottom: 20,
     left: 20,
+    right: 20,
     zIndex: 3,
+    flexDirection: 'row',
+    gap: 10,
+  },
+  deleteButton: theme => ({
     backgroundColor: themes[theme]?.secondaryButtonBackground,
   }),
 });

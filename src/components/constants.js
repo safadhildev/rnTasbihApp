@@ -33,3 +33,11 @@ export const STORAGE_KEYS = {
   RECORDS: 'records',
   THEME: 'theme',
 };
+
+export const HEADER_CTA = {
+  EDIT: 'edit',
+  DELETE: 'delete',
+  CANCEL: 'cancel',
+  MORE: 'MORE',
+  SAVE: 'SAVE',
+};

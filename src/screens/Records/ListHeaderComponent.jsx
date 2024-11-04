@@ -261,8 +261,6 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
   },
   selectMode: {
-    // paddingHorizontal: 10,
-    // paddingVertical: 10,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'flex-start',

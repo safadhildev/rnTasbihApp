@@ -9,12 +9,23 @@ const BackgroundView = ({
   style = null,
   containerStyle = null,
   opacity = 1,
+  borderRadius = 0,
 }) => {
   const {theme} = useLocalContext();
 
   return (
-    <View style={StyleSheet.flatten([styles.container, containerStyle])}>
-      <View style={styles.background(theme, backgroundColor, opacity)}>
+    <View
+      style={StyleSheet.flatten([
+        styles.container(borderRadius),
+        containerStyle,
+      ])}>
+      <View
+        style={styles.background(
+          theme,
+          backgroundColor,
+          opacity,
+          borderRadius,
+        )}>
         {React.isValidElement(children) && (
           <View style={StyleSheet.flatten([styles.children, style])}>
             {children}
@@ -26,15 +37,18 @@ const BackgroundView = ({
 };
 
 const styles = StyleSheet.create({
-  container: {
+  container: borderRadius => ({
     backgroundColor: 'blue',
     position: 'relative',
     overflow: 'hidden',
     flex: 1,
-  },
-  background: (theme, customColor, opacity) => ({
+    borderRadius,
+  }),
+  background: (theme, customColor, opacity, borderRadius) => ({
     flex: 1,
     backgroundColor: customColor ?? themes[theme]?.background,
+    borderRadius,
+    opacity,
   }),
   children: {
     flex: 1,

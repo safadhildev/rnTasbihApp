@@ -1,6 +1,6 @@
 import {useNavigation} from '@react-navigation/native';
 import React, {useEffect, useState} from 'react';
-import {StyleSheet, View} from 'react-native';
+import {StyleSheet, View, Text as RNText, I18nManager} from 'react-native';
 import ButtonMore from '../../components/ButtonMore.jsx';
 import Clicker from '../../components/Clicker.jsx';
 import {useLocalContext} from '../../components/context';
@@ -10,6 +10,8 @@ import {RECORDS, SETTINGS} from '../../routes/constants.js';
 import date from '../../utils/Date.js';
 import useGlobalFucntion from '../../utils/hooks/useGlobal.js';
 import themes from '../../utils/themes.js';
+import Divider from '../../components/Divider.jsx';
+import {DIRECTION} from '../../components/constants.js';
 
 const Home = () => {
   const navigation = useNavigation();
@@ -87,12 +89,18 @@ const Home = () => {
         onClose={_triggerSaveModal}
         onSave={_handleSave}
       />
-      <View style={styles.infoContainer} pointerEvents='none'>
-        <Text style={styles.info(theme)}>
-          {date.getHijriDate()} | {date.getTodayDate()}
-        </Text>
+      <View style={styles.infoContainer} pointerEvents="none">
+        <View
+          style={{
+            flexDirection: 'row',
+            justifyContent: 'flex-start',
+            gap: 5,
+          }}>
+          <Text style={styles.info(theme)}>{date.getTodayDate()}</Text>
+          <Divider direction={DIRECTION.VERTICAL} />
+          <Text style={styles.info(theme)}>{date.getHijriDate()}</Text>
+        </View>
         <Text style={styles.info(theme)}>{currentTime}</Text>
-        {isDev && <Text style={styles.info(theme)}>ID: {currentData?.id}</Text>}
       </View>
       <View pointerEvents="box-none" style={styles.ctaContainer}>
         <ButtonMore
@@ -104,6 +112,9 @@ const Home = () => {
           onSettings={_handleSettings}
         />
       </View>
+      {isDev && (
+        <Text style={styles.infoDev(theme)}>ID: {currentData?.id}</Text>
+      )}
     </View>
   );
 };
@@ -131,10 +142,20 @@ const styles = StyleSheet.create({
   info: (theme, size) => ({
     color: themes[theme]?.infoText,
     fontSize: size ?? 16,
+    // textAlign: I18nManager.isRTL ? 'right' : 'left',
     textAlign: 'left',
     lineHeight: 24,
     fontWeight: '600',
     opacity: 0.5,
+  }),
+  infoDev: theme => ({
+    position: 'absolute',
+    color: themes[theme]?.infoText,
+    fontWeight: '600',
+    opacity: 0.5,
+    fontSize: 10,
+    bottom: 10,
+    right: 10,
   }),
   infoContainer: {
     position: 'absolute',

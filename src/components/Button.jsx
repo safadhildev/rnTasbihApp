@@ -32,6 +32,7 @@ const Button = ({
   textStyle,
   disabled = false,
   loading,
+  elevated = false,
   ...props
 }) => {
   const {theme} = useLocalContext();
@@ -41,7 +42,7 @@ const Button = ({
   return (
     <View
       style={StyleSheet.flatten([
-        styles.container(theme, iconPosition, round, type, disabled),
+        styles.container(theme, iconPosition, round, type, disabled, elevated),
         style,
       ])}>
       <TouchableOpacity
@@ -90,7 +91,7 @@ const Button = ({
 };
 
 const styles = StyleSheet.create({
-  container: (theme, position, round, type, disabled) => ({
+  container: (theme, position, round, type, disabled, elevated) => ({
     ...position,
     backgroundColor:
       type === BUTTON_TYPE.PRIMARY
@@ -106,6 +107,11 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     position: 'relatve',
     overflow: 'hidden',
+    ...Platform.select({
+      android: {
+        elevation: elevated ? 2 : 0,
+      },
+    }),
   }),
   disabledPrimary: {
     position: 'absolute',

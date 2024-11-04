@@ -1,5 +1,5 @@
-import {ArrowLeft, MoreVert} from 'iconoir-react-native';
-import React, {Fragment, useState} from 'react';
+import {ArrowLeft, FloppyDisk, MoreVert, Xmark} from 'iconoir-react-native';
+import React, {Fragment, useEffect, useState} from 'react';
 import {
   FlatList,
   Platform,
@@ -12,7 +12,7 @@ import Divider from './Divider';
 import Gap from './Gap';
 import Modal from './Modal';
 import Text from './Text';
-import {DIRECTION} from './constants';
+import {DIRECTION, HEADER_CTA} from './constants';
 import {useLocalContext} from './context';
 
 const Header = ({
@@ -20,18 +20,48 @@ const Header = ({
   onBack = () => {},
   options = [],
   onCtaPress = () => {},
+  cta = null,
 }) => {
   const {theme} = useLocalContext();
   const [showOptions, setShowOptions] = useState(false);
-  const [optionsButtonLayout, setOptionsButtonLayout] = useState(null);
 
   const _triggerOptions = () => {
     setShowOptions(!showOptions);
   };
 
-  const _handleClickAction = val => {
+  const _handleClickActionItem = val => {
     onCtaPress(val);
     _triggerOptions();
+  };
+
+  const getIconByCTA = () => {
+    const defaultProps = {
+      color: themes[theme]?.inputText,
+      width: 24,
+      height: 24,
+      strokeWidth: 2,
+    };
+    switch (cta) {
+      case HEADER_CTA.MORE:
+        return <MoreVert {...defaultProps} />;
+      case HEADER_CTA.CANCEL:
+        return <Xmark {...defaultProps} width={30} height={30} />;
+      case 'save':
+        return <FloppyDisk {...defaultProps} />;
+      default:
+        return null;
+    }
+  };
+
+  const _handleCta = () => {
+    switch (cta) {
+      case HEADER_CTA.MORE:
+        _triggerOptions();
+        break;
+      default:
+        onCtaPress();
+        break;
+    }
   };
 
   return (
@@ -48,14 +78,9 @@ const Header = ({
           </TouchableOpacity>
         )}
         <Text style={styles.text(theme)}>{text}</Text>
-        {options?.length > 0 && (
-          <TouchableOpacity onPress={_triggerOptions} style={styles.back}>
-            <MoreVert
-              color={themes[theme]?.inputText}
-              width={24}
-              height={24}
-              strokeWidth={3}
-            />
+        {cta && (
+          <TouchableOpacity onPress={_handleCta} style={styles.back}>
+            {getIconByCTA()}
           </TouchableOpacity>
         )}
       </View>
@@ -77,7 +102,7 @@ const Header = ({
               <Fragment>
                 <TouchableOpacity
                   activeOpacity={0.8}
-                  onPress={() => _handleClickAction(item?.value)}>
+                  onPress={() => _handleClickActionItem(item?.value)}>
                   {index !== 0 && (
                     <Gap size={10} direction={DIRECTION.VERTICAL} />
                   )}
@@ -104,6 +129,8 @@ const styles = StyleSheet.create({
     paddingVertical: 15,
     flexDirection: 'row',
     alignItems: 'center',
+    height: 60,
+    overflow: 'hidden',
   },
   back: {
     paddingRight: 10,

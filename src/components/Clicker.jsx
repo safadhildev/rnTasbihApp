@@ -1,4 +1,4 @@
-import React, {useRef} from 'react';
+import React, {useEffect, useRef} from 'react';
 import {Animated, StyleSheet, TouchableOpacity} from 'react-native';
 import animation from '../utils/animation';
 import themes from '../utils/themes';
@@ -31,19 +31,26 @@ const Clicker = ({onPress = () => {}, showMore = false}) => {
 
   const _handleClick = () => {
     if (onPress && typeof onPress === 'function') {
-      if (currentData?.count === 0) {
-        _startInfoAnimation();
-      }
       onPress();
       if (!showMore) {
+        if (currentData?.count === 0) {
+          _startInfoAnimation();
+        }
         _handleAnimation();
       }
     }
   };
 
+  useEffect(() => {
+    if (currentData?.count === 0) {
+      infoAnimValue.setValue(1);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [currentData?.count]);
+
   return (
     <TouchableOpacity
-      activeOpacity={0.9}
+      activeOpacity={1}
       onPress={_handleClick}
       style={styles.container}>
       <Animated.Text

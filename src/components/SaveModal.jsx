@@ -121,7 +121,7 @@ const SaveModal = ({
         <Button
           text={isEdit ? 'Update' : 'Save'}
           round={false}
-          style={{flex: 3}}
+          style={{flex: 2}}
           onPress={_handleSave}
           disabled={loading}
           loading={loading}

@@ -51,7 +51,7 @@ const ButtonMore = ({
   const settingsBtnPostionY = useRef(new Animated.Value(0)).current;
   const settingsBtnOpacity = useRef(new Animated.Value(0)).current;
 
-  const _handleExpand = () => {
+  const _triggerAnimation = () => {
     Animated.timing(rotateAnimation, {
       toValue: expand ? 1 : 0,
       duration: 200,
@@ -117,7 +117,7 @@ const ButtonMore = ({
   };
 
   useEffect(() => {
-    _handleExpand();
+    _triggerAnimation();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [expand]);
 
@@ -138,6 +138,7 @@ const ButtonMore = ({
     <React.Fragment>
       <View style={styles.btnMore}>
         <Button
+          elevated={!!expand}
           icon={
             <Animated.View style={{transform: [{rotate: spin}]}}>
               <MoreHoriz {...iconProps} />
@@ -147,7 +148,7 @@ const ButtonMore = ({
         />
       </View>
       {/* Complete */}
-      {currentData?.count > 0 && (
+      {currentData?.count > 0 && expand && (
         <Animated.View
           style={[
             styles.button,
