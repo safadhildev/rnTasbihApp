@@ -113,7 +113,7 @@ const SaveModal = ({
             type={BUTTON_TYPE.SECONDARY}
             round={false}
             style={{flex: 1}}
-            textStyle={{color: themes[theme]?.secondaryButtontext}}
+            textStyle={{color: themes[theme]?.secondaryButtonBackground}}
             onPress={() => onDelete(selectedItem?.id)}
             disabled={loading}
           />
