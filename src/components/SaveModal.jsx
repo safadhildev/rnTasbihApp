@@ -8,6 +8,7 @@ import Dropdown from './Dropdown';
 import Gap from './Gap';
 import Modal from './Modal';
 import Text from './Text';
+import {Z_INDEX} from './constants';
 
 const SaveModal = ({
   visible,
@@ -19,7 +20,7 @@ const SaveModal = ({
   loading = false,
   selectedItem = null,
 }) => {
-  const {theme} = useLocalContext();
+  const {theme, isDev} = useLocalContext();
 
   const inputRef = useRef(null);
   const [inputValue, setInputValue] = useState('');
@@ -95,7 +96,9 @@ const SaveModal = ({
 
         {isEdit && !showDropdown && (
           <View style={styles.editInfo}>
-            <Text style={styles.editInfoText}>ID: {selectedItem?.id}</Text>
+            {isDev && (
+              <Text style={styles.editInfoText}>ID: {selectedItem?.id}</Text>
+            )}
             <Text style={styles.editInfoText}>
               Count: {selectedItem?.count}
             </Text>
@@ -139,7 +142,7 @@ const styles = StyleSheet.create({
   },
   backdrop: {
     position: 'absolute',
-    zIndex: 1,
+    zIndex: Z_INDEX.OVERLAY,
   },
   container: {
     justifyContent: 'center',

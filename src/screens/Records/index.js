@@ -124,6 +124,7 @@ const ListItem = ({
           <View style={styles.countWrapper}>
             <Text style={styles.count(theme)}>{item?.count}</Text>
             <Button
+              border
               onPress={_onEdit}
               icon={
                 <Edit
@@ -358,6 +359,7 @@ const Records = () => {
         <View style={styles.selecCtaWrapper}>
           <Button
             elevated
+            round
             onPress={() => {
               setShowMultiDeleteConfirmation(true);
             }}

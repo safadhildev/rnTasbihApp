@@ -1,10 +1,10 @@
 import React, {Fragment} from 'react';
+import {StatusBar} from 'react-native';
 import AppContext, {useLocalContext} from './src/components/context';
 import Navigator from './src/routes';
-import {StatusBar} from 'react-native';
 import themes from './src/utils/themes';
 
-const Root = ({children}) => {
+const Root = () => {
   const {theme} = useLocalContext();
 
   return (

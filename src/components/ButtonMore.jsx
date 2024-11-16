@@ -19,6 +19,7 @@ import animation from '../utils/animation';
 import themes from '../utils/themes';
 import Button from './Button';
 import {useLocalContext} from './context';
+import {Z_INDEX} from './constants';
 
 const ButtonMore = ({
   expand = false,
@@ -135,9 +136,17 @@ const ButtonMore = ({
   };
 
   return (
-    <React.Fragment>
+    <View pointerEvents="box-none" style={styles.container}>
+      {expand && (
+        <TouchableOpacity
+          activeOpacity={1}
+          style={styles.overlay}
+          onPress={triggerExpand}
+        />
+      )}
       <View style={styles.btnMore}>
         <Button
+          round
           elevated={!!expand}
           icon={
             <Animated.View style={{transform: [{rotate: spin}]}}>
@@ -157,7 +166,11 @@ const ButtonMore = ({
               opacity: completeBtnOpacity,
             },
           ]}>
-          <Button icon={<FloppyDisk {...iconProps} />} onPress={_handleSave} />
+          <Button
+            round
+            icon={<FloppyDisk {...iconProps} />}
+            onPress={_handleSave}
+          />
         </Animated.View>
       )}
 
@@ -173,7 +186,7 @@ const ButtonMore = ({
             opacity: listBtnOpacity,
           },
         ]}>
-        <Button icon={<List {...iconProps} />} onPress={_handleList} />
+        <Button round icon={<List {...iconProps} />} onPress={_handleList} />
       </Animated.View>
 
       {/* Settings */}
@@ -188,7 +201,11 @@ const ButtonMore = ({
             opacity: settingsBtnOpacity,
           },
         ]}>
-        <Button icon={<Settings {...iconProps} />} onPress={_handleSettings} />
+        <Button
+          round
+          icon={<Settings {...iconProps} />}
+          onPress={_handleSettings}
+        />
       </Animated.View>
 
       {/* Repeat */}
@@ -201,27 +218,34 @@ const ButtonMore = ({
           },
         ]}>
         <Button
+          round
           icon={<ClockRotateRight {...iconProps} />}
           onPress={_handleRepeat}
         />
       </Animated.View>
-    </React.Fragment>
+    </View>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
-    position: 'relative',
+    position: 'absolute',
+    top: 0,
+    bottom: 0,
+    left: 0,
+    right: 0,
+    zIndex: Z_INDEX.FLOATING_BUTTON,
+    justifyContent: 'space-between',
+    flexDirection: 'row',
   },
   btnMore: {
-    zIndex: 4,
+    zIndex: Z_INDEX.FLOATING_BUTTON,
     position: 'absolute',
     bottom: 10,
     left: 10,
   },
   button: {
-    zIndex: 3,
+    zIndex: Z_INDEX.FLOATING_BUTTON_ITEMS,
     position: 'absolute',
     bottom: 10,
     left: 10,
@@ -232,8 +256,7 @@ const styles = StyleSheet.create({
     left: 0,
     right: 0,
     bottom: 0,
-    zIndex: 2,
-    backgroundColor: 'red',
+    zIndex: Z_INDEX.OVERLAY,
   },
 });
 

@@ -7,11 +7,20 @@ import date from '../Date';
 import LocalStorage from '../LocalStorage';
 import {THEME_CONSTANT} from '../themes';
 import {onSearch} from '../common';
-import {STORAGE_KEYS} from '../../components/constants';
+import {COUNTER_TYPE, STORAGE_KEYS} from '../../components/constants';
 import {HOME} from '../../routes/constants';
 
 const useGlobalFucntion = () => {
   const {updateContext, currentData} = useLocalContext();
+
+  const _getNewCounterData = () => {
+    return {
+      date: moment().format('DD/MM/YYYY'),
+      hijriDate: momentHijri().format('iYYYY/iM/iD'),
+      id: uuid.v4(),
+      count: 0,
+    };
+  };
   const _handleChangeTheme = async key => {
     if (key) {
       try {
@@ -20,6 +29,30 @@ const useGlobalFucntion = () => {
       } catch (e) {
         throw new Error(e);
       }
+    }
+  };
+
+  const _handleChangeCounterType = async key => {
+    if (key) {
+      try {
+        await LocalStorage.setItem(STORAGE_KEYS.COUNTER_TYPE, key);
+        updateContext({
+          counterType: key,
+          currentData: _getNewCounterData(),
+        });
+      } catch (e) {
+        throw new Error(e);
+      }
+    }
+  };
+
+  const _handleResetCounter = async () => {
+    try {
+      updateContext({
+        currentData: _getNewCounterData(),
+      });
+    } catch (e) {
+      throw new Error(e);
     }
   };
 
@@ -135,8 +168,10 @@ const useGlobalFucntion = () => {
   const _init = async navigation => {
     try {
       const theme = await LocalStorage.getItem(STORAGE_KEYS.THEME);
+      const counterType = await LocalStorage.getItem(STORAGE_KEYS.COUNTER_TYPE);
       updateContext({
         theme: JSON.parse(theme) ?? THEME_CONSTANT.lime,
+        counterType: JSON.parse(counterType) ?? COUNTER_TYPE.CLICKER,
         currentData: {
           date: moment().format('DD/MM/YYYY'),
           hijriDate: momentHijri().format('iYYYY/iM/iD'),
@@ -153,11 +188,13 @@ const useGlobalFucntion = () => {
 
   return {
     onChangeTheme: _handleChangeTheme,
+    onChangeCounterType: _handleChangeCounterType,
     onSaveCount: _handleSaveRecord,
     onUpdateCount: _handleUpdateRecord,
     getSavedRecords: _fetchSaveRecords,
     onDelete: _handleDelete,
     onMultiDelete: _handleMultiDelete,
+    onResetCounter: _handleResetCounter,
     init: _init,
   };
 };

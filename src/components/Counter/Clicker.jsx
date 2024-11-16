@@ -1,14 +1,16 @@
 import React, {useEffect, useRef} from 'react';
-import {Animated, StyleSheet, TouchableOpacity} from 'react-native';
-import animation from '../utils/animation';
-import themes from '../utils/themes';
-import {useLocalContext} from './context';
-import Text from './Text';
+import {Animated, StyleSheet, TouchableOpacity, View} from 'react-native';
+import animation from '../../utils/animation';
+import themes from '../../utils/themes';
+import {useLocalContext} from '../context';
+import Text from '../Text';
 import {OpenSelectHandGesture} from 'iconoir-react-native';
+import {Z_INDEX} from '../constants';
 
 const Clicker = ({onPress = () => {}, showMore = false}) => {
   const {theme, currentData} = useLocalContext();
   const animationValue = useRef(new Animated.Value(0)).current;
+  const scaleValue = useRef(new Animated.Value(1)).current;
   const infoAnimValue = useRef(new Animated.Value(1)).current;
 
   const _handleAnimation = () => {
@@ -20,7 +22,7 @@ const Clicker = ({onPress = () => {}, showMore = false}) => {
     });
   };
 
-  const _startInfoAnimation = () => {
+  const _startInfoFadeAnimation = () => {
     animation.timing({
       animationValue: infoAnimValue,
       toValue: 0,
@@ -29,12 +31,22 @@ const Clicker = ({onPress = () => {}, showMore = false}) => {
     });
   };
 
+  const _startClickAnimation = () => {
+    animation.pulse({
+      value: scaleValue,
+      minScale: 0.9,
+      maxScale: 1,
+      duration: 1000,
+      delay: 1000,
+    });
+  };
+
   const _handleClick = () => {
     if (onPress && typeof onPress === 'function') {
       onPress();
       if (!showMore) {
         if (currentData?.count === 0) {
-          _startInfoAnimation();
+          _startInfoFadeAnimation();
         }
         _handleAnimation();
       }
@@ -44,9 +56,12 @@ const Clicker = ({onPress = () => {}, showMore = false}) => {
   useEffect(() => {
     if (currentData?.count === 0) {
       infoAnimValue.setValue(1);
+      _startClickAnimation();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [currentData?.count]);
+
+  console.log('[DEBUG] >> ', {scaleValue});
 
   return (
     <TouchableOpacity
@@ -63,13 +78,16 @@ const Clicker = ({onPress = () => {}, showMore = false}) => {
         numberOfLines={1}>
         {currentData?.count}
       </Animated.Text>
-      <Animated.View style={styles.infoWrapper(infoAnimValue)}>
+      <Animated.View style={[styles.infoWrapper(infoAnimValue)]}>
         <Text style={styles.info(theme)}>Tap anywhere to start</Text>
-        <OpenSelectHandGesture
-          color={themes[theme]?.infoText}
-          width={20}
-          height={20}
-        />
+        <Animated.View style={{transform: [{scale: scaleValue}]}}>
+          <OpenSelectHandGesture
+            color={themes[theme]?.infoText}
+            width={20}
+            height={20}
+            style={{transform: [{rotate: '-30deg'}]}}
+          />
+        </Animated.View>
       </Animated.View>
     </TouchableOpacity>
   );
@@ -78,7 +96,7 @@ const Clicker = ({onPress = () => {}, showMore = false}) => {
 const styles = StyleSheet.create({
   container: {
     position: 'absolute',
-    zIndex: -1,
+    zIndex: Z_INDEX.UNDER_FLOOR,
     top: 0,
     left: 0,
     right: 0,

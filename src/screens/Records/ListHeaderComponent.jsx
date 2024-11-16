@@ -136,12 +136,14 @@ const ListHeaderComponent = ({
           justifyContent: 'flex-start',
         }}
         contentContainerStyle={styles.popupContent(
+          theme,
           sortButtonLayout
             ? sortButtonLayout?.height + sortButtonLayout?.y + 50
             : 0,
         )}>
         <FlatList
           data={SORT_OPTIONS}
+          contentContainerStyle={styles.popupContentInner(theme)}
           renderItem={({item, index}) => {
             return (
               <Fragment>
@@ -248,13 +250,20 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     paddingTop: 50,
   },
-  popupContent: (yOffset = 0) => ({
+  popupContent: (theme, yOffset = 0) => ({
     alignSelf: 'flex-end',
     width: '40%',
     marginTop: yOffset,
     minHeight: 0,
-    paddingVertical: 15,
-    borderRadius: 15,
+    borderRadius: 10,
+    paddingHorizontal: 0,
+    paddingVertical: 0,
+    borderWidth: 1,
+    borderColor: themes[theme]?.inputPlacholder,
+  }),
+  popupContentInner: theme => ({
+    padding: 10,
+    borderRadius: 10,
   }),
   listItem: {
     flexDirection: 'row',

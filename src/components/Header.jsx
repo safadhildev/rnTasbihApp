@@ -94,9 +94,10 @@ const Header = ({
         style={{
           justifyContent: 'flex-start',
         }}
-        contentContainerStyle={styles.popupContent(20)}>
+        contentContainerStyle={styles.popupContent(theme, 20)}>
         <FlatList
           data={options}
+          contentContainerStyle={styles.popupContentWrapper(theme)}
           renderItem={({item, index}) => {
             return (
               <Fragment>
@@ -150,13 +151,20 @@ const styles = StyleSheet.create({
       },
     }),
   }),
-  popupContent: (yOffset = 0) => ({
+  popupContent: (theme, yOffset = 0) => ({
     alignSelf: 'flex-end',
     width: '40%',
     marginTop: yOffset,
     minHeight: 0,
-    paddingVertical: 15,
-    borderRadius: 15,
+    borderRadius: 10,
+    paddingHorizontal: 0,
+    paddingVertical: 0,
+    borderWidth: 1,
+    borderColor: themes[theme]?.inputPlacholder,
+  }),
+  popupContentWrapper: theme => ({
+    padding: 10,
+    borderRadius: 10,
   }),
   listItem: {
     flexDirection: 'row',

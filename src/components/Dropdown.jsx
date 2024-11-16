@@ -160,7 +160,7 @@ const styles = StyleSheet.create({
   optionsContainer: theme => ({
     minHeight: 230,
     zIndex: 999,
-    borderRadius: 20,
+    borderRadius: 10,
     borderWidth: 2,
     borderColor: themes[theme]?.inputBorder,
     backgroundColor: themes[theme]?.inputBackground,
@@ -168,14 +168,15 @@ const styles = StyleSheet.create({
   }),
   dropdown: theme => ({
     backgroundColor: themes[theme]?.inputBackground,
-    borderRadius: 20,
+    borderRadius: 10,
     minHeight: 50,
   }),
   dropdownInput: (theme, showDropdown) => ({
     backgroundColor: themes[theme]?.inputBackground,
     minHeight: 50,
-    borderBottomLeftRadius: showDropdown ? 0 : 20,
-    borderBottomRightRadius: showDropdown ? 0 : 20,
+    borderRadius: 10,
+    borderBottomLeftRadius: showDropdown ? 0 : 10,
+    borderBottomRightRadius: showDropdown ? 0 : 10,
   }),
   dropdownModal: theme => ({
     position: 'absolute',
@@ -186,8 +187,8 @@ const styles = StyleSheet.create({
     minHeight: 40,
     maxHeight: 190,
     // zIndex: 99999999,
-    borderBottomLeftRadius: 20,
-    borderBottomRightRadius: 20,
+    borderBottomLeftRadius: 10,
+    borderBottomRightRadius: 10,
     borderWidth: 2,
     borderColor: themes[theme]?.inputBorder,
     backgroundColor: themes[theme]?.inputBackground,

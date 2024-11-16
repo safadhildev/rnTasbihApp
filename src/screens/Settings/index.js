@@ -6,6 +6,7 @@ import Header from '../../components/Header';
 import Text from '../../components/Text';
 import themes from '../../utils/themes';
 import ThemeSettings from './ThemeSettings';
+import CounterSettings from './CounterSettings';
 
 const Settings = () => {
   const navigation = useNavigation();
@@ -21,6 +22,7 @@ const Settings = () => {
         <ScrollView contentContainerStyle={styles.contentContaienr}>
           <View style={{flex: 1}}>
             <ThemeSettings />
+            <CounterSettings />
           </View>
           <Text style={styles.appVersion}>v0.0.1</Text>
         </ScrollView>

@@ -33,7 +33,7 @@ const ThemeSettings = () => {
           text={theme}
           onPress={_triggerThemeDropdown}
           type={BUTTON_TYPE.OUTLINED}
-          icon={
+          rightIcon={
             <NavArrowDown
               color={themes[theme]?.inputText}
               width={24}
@@ -65,7 +65,7 @@ const ThemeSettings = () => {
                   _handleChangeTheme(item.value);
                 }}
                 textStyle={styles.buttonText(theme)}
-                icon={
+                rightIcon={
                   item.value === theme && (
                     <Check
                       color={themes[theme]?.primaryButtonText}
