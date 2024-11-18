@@ -1,13 +1,13 @@
-import { Check, NavArrowDown } from 'iconoir-react-native';
-import React, { Fragment, useState } from 'react';
-import { FlatList, StyleSheet, View } from 'react-native';
-import Button, { BUTTON_TYPE, ICON_POSITION } from '../../components/Button';
-import { useLocalContext } from '../../components/context';
+import {Check, NavArrowDown} from 'iconoir-react-native';
+import React, {Fragment, useState} from 'react';
+import {FlatList, StyleSheet, View} from 'react-native';
+import Button, {BUTTON_TYPE, ICON_POSITION} from '../../components/Button';
+import {useLocalContext} from '../../components/context';
 import Gap from '../../components/Gap';
 import Modal from '../../components/Modal';
 import Text from '../../components/Text';
 import useGlobalFucntion from '../../utils/hooks/useGlobal';
-import themes, { getThemes } from '../../utils/themes';
+import themes, {getThemes} from '../../utils/themes';
 
 const ThemeSettings = () => {
   const {theme} = useLocalContext();
@@ -42,7 +42,6 @@ const ThemeSettings = () => {
             />
           }
           iconPosition={ICON_POSITION.RIGHT}
-          style={{borderRadius: 10}}
           textStyle={styles.input(theme)}
         />
       </View>
@@ -54,8 +53,8 @@ const ThemeSettings = () => {
         <FlatList
           data={getThemes()}
           style={{
-            marginHorizontal: -10,
-            paddingHorizontal: 10,
+            marginHorizontal: -20,
+            paddingHorizontal: 20,
           }}
           renderItem={({item}) => (
             <Fragment>
@@ -96,7 +95,7 @@ const styles = StyleSheet.create({
   }),
   sectionLabel: theme => ({
     fontWeight: 'bold',
-    marginHorizontal: 15,
+    marginHorizontal: 20,
     marginBottom: 3,
     position: 'absolute',
     backgroundColor: themes[theme]?.background,

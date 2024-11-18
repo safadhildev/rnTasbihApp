@@ -2,23 +2,17 @@ import {useNavigation} from '@react-navigation/native';
 import React, {useState} from 'react';
 import {I18nManager, StyleSheet, View} from 'react-native';
 import ButtonMore from '../../components/ButtonMore.jsx';
-import Clicker from '../../components/Counter/Clicker.jsx';
-import {
-  COUNTER_TYPE,
-  DIRECTION,
-  SWIPER_TYPES,
-  Z_INDEX,
-} from '../../components/constants.js';
+import {SWIPER_TYPES, Z_INDEX} from '../../components/constants.js';
 import {useLocalContext} from '../../components/context';
-import Divider from '../../components/Divider.jsx';
+import Clicker from '../../components/Counter/Clicker.jsx';
+import Swiper from '../../components/Counter/Swiper.jsx';
 import SaveModal from '../../components/SaveModal.jsx';
 import Text from '../../components/Text.jsx';
 import {RECORDS, SETTINGS} from '../../routes/constants.js';
 import date from '../../utils/Date.js';
 import useGlobalFucntion from '../../utils/hooks/useGlobal.js';
-import themes from '../../utils/themes.js';
 import useTime from '../../utils/hooks/useTime.js';
-import Swiper from '../../components/Counter/Swiper.jsx';
+import themes from '../../utils/themes.js';
 
 const Home = () => {
   const navigation = useNavigation();
@@ -31,7 +25,6 @@ const Home = () => {
   const [showSaveModal, setShowSaveModal] = useState(false);
 
   const _handleUpdateCount = () => {
-    console.log('[DEBUG] >> _handleUpdateCount >> ', {currentData});
     if (showMore) {
       setShowMore(false);
     } else {

@@ -50,7 +50,6 @@ const CounterSettings = () => {
               strokeWidth={2}
             />
           }
-          style={{borderRadius: 10}}
           textStyle={styles.input(theme)}
         />
       </View>
@@ -63,8 +62,8 @@ const CounterSettings = () => {
         <FlatList
           data={COUNTER_TYPE_ARRAY}
           style={{
-            marginHorizontal: -10,
-            paddingHorizontal: 10,
+            marginHorizontal: -20,
+            paddingHorizontal: 20,
           }}
           renderItem={({item}) => (
             <Fragment>
@@ -76,7 +75,10 @@ const CounterSettings = () => {
                 textStyle={styles.buttonText(theme)}
                 leftIcon={
                   <View style={styles.leftIconWrapper}>
-                    <HintIcon counterType={item.value} />
+                    <HintIcon
+                      counterType={item.value}
+                      color={themes[theme]?.primaryButtonText}
+                    />
                   </View>
                 }
                 rightIcon={
@@ -112,7 +114,7 @@ const styles = StyleSheet.create({
   }),
   sectionLabel: theme => ({
     fontWeight: 'bold',
-    marginHorizontal: 15,
+    marginHorizontal: 20,
     marginBottom: 3,
     position: 'absolute',
     backgroundColor: themes[theme]?.background,
@@ -126,6 +128,7 @@ const styles = StyleSheet.create({
   input: theme => ({
     textTransform: 'capitalize',
     color: themes[theme]?.inputText,
+    fontSize: 16,
   }),
   buttonText: theme => ({
     backgroundColor: 'transparent',

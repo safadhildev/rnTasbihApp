@@ -1,6 +1,6 @@
-import { useNavigation } from '@react-navigation/native';
-import React, { useEffect, useRef } from 'react';
-import { Animated, StyleSheet, View } from 'react-native';
+import {useNavigation} from '@react-navigation/native';
+import React, {useEffect, useRef} from 'react';
+import {Animated, StyleSheet, View} from 'react-native';
 import LoadingOverlay from '../../components/LodaingOverlay';
 import animation from '../../utils/animation';
 import useGlobalFucntion from '../../utils/hooks/useGlobal';
@@ -20,9 +20,13 @@ const SplashScreen = () => {
     });
   };
 
-  useEffect(() => {
-    init(navigation);
+  const _init = async () => {
+    await init(navigation);
     _animate();
+  };
+
+  useEffect(() => {
+    _init();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 

@@ -11,7 +11,7 @@ const Clicker = ({onPress = () => {}, showMore = false}) => {
   const {theme, currentData} = useLocalContext();
   const animationValue = useRef(new Animated.Value(0)).current;
   const scaleValue = useRef(new Animated.Value(1)).current;
-  const infoAnimValue = useRef(new Animated.Value(1)).current;
+  const infoAnimValue = useRef(new Animated.Value(0.5)).current;
 
   const _handleAnimation = () => {
     animation.bounce({
@@ -25,7 +25,7 @@ const Clicker = ({onPress = () => {}, showMore = false}) => {
   const _startInfoFadeAnimation = () => {
     animation.timing({
       animationValue: infoAnimValue,
-      toValue: 0,
+      toValue: 0.5,
       duration: 1500,
       useNativeDriver: true,
     });
@@ -34,7 +34,7 @@ const Clicker = ({onPress = () => {}, showMore = false}) => {
   const _startClickAnimation = () => {
     animation.pulse({
       value: scaleValue,
-      minScale: 0.9,
+      minScale: 0.85,
       maxScale: 1,
       duration: 1000,
       delay: 1000,
@@ -61,8 +61,6 @@ const Clicker = ({onPress = () => {}, showMore = false}) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [currentData?.count]);
 
-  console.log('[DEBUG] >> ', {scaleValue});
-
   return (
     <TouchableOpacity
       activeOpacity={1}
@@ -75,11 +73,12 @@ const Clicker = ({onPress = () => {}, showMore = false}) => {
         ]}
         animationValue={animationValue}
         adjustsFontSizeToFit
+        allowFontScaling={false}
         numberOfLines={1}>
         {currentData?.count}
       </Animated.Text>
       <Animated.View style={[styles.infoWrapper(infoAnimValue)]}>
-        <Text style={styles.info(theme)}>Tap anywhere to start</Text>
+        <Text style={styles.info(theme)}>Tap anywhere</Text>
         <Animated.View style={{transform: [{scale: scaleValue}]}}>
           <OpenSelectHandGesture
             color={themes[theme]?.infoText}
@@ -119,7 +118,7 @@ const styles = StyleSheet.create({
   }),
   info: theme => ({
     color: themes[theme]?.infoText,
-    fontSize: 16,
+    fontSize: 14,
     textAlign: 'center',
     lineHeight: 24,
     fontWeight: '400',

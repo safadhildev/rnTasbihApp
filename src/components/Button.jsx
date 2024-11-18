@@ -35,6 +35,7 @@ const Button = ({
   loading,
   elevated = false,
   border = false,
+  borderRadius = 20,
   ...props
 }) => {
   const {theme} = useLocalContext();
@@ -49,7 +50,15 @@ const Button = ({
     return (
       <View
         style={StyleSheet.flatten([
-          styles.container(theme, round, type, disabled, elevated, border),
+          styles.container(
+            theme,
+            round,
+            type,
+            disabled,
+            elevated,
+            border,
+            borderRadius,
+          ),
           style,
         ])}>
         <TouchableOpacity
@@ -122,13 +131,21 @@ const Button = ({
 };
 
 const styles = StyleSheet.create({
-  container: (theme, round, type, disabled, elevated, border) => ({
+  container: (
+    theme,
+    round,
+    type,
+    disabled,
+    elevated,
+    border,
+    borderRadius = 20,
+  ) => ({
     backgroundColor:
       type === BUTTON_TYPE.PRIMARY
         ? themes[theme]?.primaryButtonBackground
         : 'transparent',
     opacity: disabled ? 0.5 : 1,
-    borderRadius: round ? 50 : 10,
+    borderRadius: round ? 50 : borderRadius,
     borderWidth: type === BUTTON_TYPE.OUTLINED ? 2 : border ? 1 : 0,
     borderColor:
       type === BUTTON_TYPE.OUTLINED || border

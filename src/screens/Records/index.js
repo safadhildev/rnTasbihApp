@@ -1,6 +1,6 @@
-import {useNavigation} from '@react-navigation/native';
-import {Edit, Trash} from 'iconoir-react-native';
-import React, {useEffect, useState} from 'react';
+import { useNavigation } from '@react-navigation/native';
+import { Edit, Trash } from 'iconoir-react-native';
+import React, { useEffect, useState } from 'react';
 import {
   BackHandler,
   FlatList,
@@ -9,20 +9,20 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import Button, {BUTTON_TYPE} from '../../components/Button';
+import Button, { BUTTON_TYPE } from '../../components/Button';
 import Checkbox from '../../components/Checkbox';
-import {DIRECTION, HEADER_CTA} from '../../components/constants';
-import {useLocalContext} from '../../components/context';
+import { DIRECTION, HEADER_CTA } from '../../components/constants';
+import { useLocalContext } from '../../components/context';
 import Divider from '../../components/Divider';
 import Gap from '../../components/Gap';
 import Header from '../../components/Header';
 import Modal from '../../components/Modal';
 import SaveModal from '../../components/SaveModal';
 import Text from '../../components/Text';
-import {onSort} from '../../utils/common';
+import { onSort } from '../../utils/common';
 import useGlobalFucntion from '../../utils/hooks/useGlobal';
 import themes from '../../utils/themes';
-import {zikirOptions} from '../../utils/zikir';
+import { zikirOptions } from '../../utils/zikir';
 import ListHeaderComponent from './ListHeaderComponent';
 
 const ListItem = ({
@@ -125,6 +125,7 @@ const ListItem = ({
             <Text style={styles.count(theme)}>{item?.count}</Text>
             <Button
               border
+              borderRadius={12}
               onPress={_onEdit}
               icon={
                 <Edit
@@ -359,7 +360,7 @@ const Records = () => {
         <View style={styles.selecCtaWrapper}>
           <Button
             elevated
-            round
+            borderRadius={27}
             onPress={() => {
               setShowMultiDeleteConfirmation(true);
             }}
@@ -478,7 +479,7 @@ const styles = StyleSheet.create({
   }),
   itemWrapper: (theme, isPressed) => ({
     flex: 1,
-    borderRadius: 10,
+    borderRadius: 20,
     borderColor: 'transparent',
     backgroundColor: themes[theme]?.listItemBackground,
     transform: [{scale: isPressed ? 0.99 : 1}],
@@ -498,7 +499,7 @@ const styles = StyleSheet.create({
     right: 0,
     bottom: 0,
     zIndex: 2,
-    borderRadius: 10,
+    borderRadius: 20,
   }),
   item: theme => ({
     flex: 1,

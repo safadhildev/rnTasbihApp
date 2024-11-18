@@ -7,6 +7,10 @@ import Text from '../../components/Text';
 import themes from '../../utils/themes';
 import ThemeSettings from './ThemeSettings';
 import CounterSettings from './CounterSettings';
+import {BannerAd, BannerAdSize, TestIds} from 'react-native-google-mobile-ads';
+import {BANNER_ADD_UNIT_ID} from '@env';
+
+const adUnitId = __DEV__ ? TestIds.BANNER : BANNER_ADD_UNIT_ID;
 
 const Settings = () => {
   const navigation = useNavigation();
@@ -26,6 +30,22 @@ const Settings = () => {
           </View>
           <Text style={styles.appVersion}>v0.0.1</Text>
         </ScrollView>
+
+        <View style={styles.bannerAd}>
+          <BannerAd
+            unitId={adUnitId}
+            onAdClosed={() => console.log('closed')}
+            onPaid={event => console.log(event)}
+            size={BannerAdSize.BANNER}
+            requestOptions={{
+              requestNonPersonalizedAdsOnly: true,
+              keywords: ['islam', 'quran'],
+              networkExtras: {
+                collapsible: 'bottom',
+              },
+            }}
+          />
+        </View>
       </View>
     </BackgroundView>
   );
@@ -67,6 +87,10 @@ const styles = StyleSheet.create({
     marginBottom: 10,
     fontWeight: '600',
     opacity: 0.5,
+  },
+  bannerAd: {
+    width: '100%',
+    alignItems: 'center',
   },
 });
 

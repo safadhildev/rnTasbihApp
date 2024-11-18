@@ -15,9 +15,9 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "13B07F861A680F5B00A75B9A"
-               BuildableName = "rmTasbihApp.app"
-               BlueprintName = "rmTasbihApp"
-               ReferencedContainer = "container:rmTasbihApp.xcodeproj">
+               BuildableName = "myTasbih.app"
+               BlueprintName = "myTasbih"
+               ReferencedContainer = "container:myTasbih.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
       </BuildActionEntries>
@@ -33,9 +33,9 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "00E356ED1AD99517003FC87E"
-               BuildableName = "rmTasbihAppTests.xctest"
-               BlueprintName = "rmTasbihAppTests"
-               ReferencedContainer = "container:rmTasbihApp.xcodeproj">
+               BuildableName = "myTasbihTests.xctest"
+               BlueprintName = "myTasbihTests"
+               ReferencedContainer = "container:myTasbih.xcodeproj">
             </BuildableReference>
          </TestableReference>
       </Testables>
@@ -55,9 +55,9 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "13B07F861A680F5B00A75B9A"
-            BuildableName = "rmTasbihApp.app"
-            BlueprintName = "rmTasbihApp"
-            ReferencedContainer = "container:rmTasbihApp.xcodeproj">
+            BuildableName = "myTasbih.app"
+            BlueprintName = "myTasbih"
+            ReferencedContainer = "container:myTasbih.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
    </LaunchAction>
@@ -72,9 +72,9 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "13B07F861A680F5B00A75B9A"
-            BuildableName = "rmTasbihApp.app"
-            BlueprintName = "rmTasbihApp"
-            ReferencedContainer = "container:rmTasbihApp.xcodeproj">
+            BuildableName = "myTasbih.app"
+            BlueprintName = "myTasbih"
+            ReferencedContainer = "container:myTasbih.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
    </ProfileAction>

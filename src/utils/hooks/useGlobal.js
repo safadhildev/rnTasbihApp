@@ -9,6 +9,7 @@ import {THEME_CONSTANT} from '../themes';
 import {onSearch} from '../common';
 import {COUNTER_TYPE, STORAGE_KEYS} from '../../components/constants';
 import {HOME} from '../../routes/constants';
+import mobileAds, {MaxAdContentRating} from 'react-native-google-mobile-ads';
 
 const useGlobalFucntion = () => {
   const {updateContext, currentData} = useLocalContext();
@@ -180,9 +181,30 @@ const useGlobalFucntion = () => {
         },
       });
 
+      await _initAds();
+
       navigation.navigate(HOME);
     } catch (e) {
       console.error(e);
+    }
+  };
+
+  const _initAds = async () => {
+    try {
+      await mobileAds().initialize();
+      await mobileAds().setRequestConfiguration({
+        // Update all future requests suitable for parental guidance
+        maxAdContentRating: MaxAdContentRating.PG,
+        // Indicates that you want your content treated as child-directed for purposes of COPPA.
+        tagForChildDirectedTreatment: true,
+        // Indicates that you want the ad request to be handled in a
+        // manner suitable for users under the age of consent.
+        tagForUnderAgeOfConsent: true,
+        // An array of test device IDs to allow.
+        testDeviceIdentifiers: ['EMULATOR'],
+      });
+    } catch (e) {
+      console.error(`_initAds: Error >> ${e}`);
     }
   };
 

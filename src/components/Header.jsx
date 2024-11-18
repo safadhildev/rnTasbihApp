@@ -156,7 +156,7 @@ const styles = StyleSheet.create({
     width: '40%',
     marginTop: yOffset,
     minHeight: 0,
-    borderRadius: 10,
+    borderRadius: 20,
     paddingHorizontal: 0,
     paddingVertical: 0,
     borderWidth: 1,
@@ -164,7 +164,7 @@ const styles = StyleSheet.create({
   }),
   popupContentWrapper: theme => ({
     padding: 10,
-    borderRadius: 10,
+    borderRadius: 20,
   }),
   listItem: {
     flexDirection: 'row',

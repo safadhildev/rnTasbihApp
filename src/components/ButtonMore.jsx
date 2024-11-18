@@ -9,17 +9,15 @@ import React, {useEffect, useRef} from 'react';
 import {
   Animated,
   Easing,
-  Keyboard,
   StyleSheet,
   TouchableOpacity,
-  TouchableWithoutFeedback,
   View,
 } from 'react-native';
 import animation from '../utils/animation';
 import themes from '../utils/themes';
 import Button from './Button';
-import {useLocalContext} from './context';
 import {Z_INDEX} from './constants';
+import {useLocalContext} from './context';
 
 const ButtonMore = ({
   expand = false,
@@ -64,28 +62,28 @@ const ButtonMore = ({
       type: expand ? 'in' : 'out',
       animation: repeatBtnPosition,
       opacity: repeatBtnOpacity,
-      offset: 80,
+      offset: 70,
     });
 
     animation.moveAndFade({
       type: expand ? 'in' : 'out',
       animation: completeBtnPosition,
       opacity: completeBtnOpacity,
-      offset: -240,
+      offset: -210,
     });
 
     animation.moveAndFade({
       type: expand ? 'in' : 'out',
       animation: listBtnPostionY,
       opacity: listBtnOpacity,
-      offset: -160,
+      offset: -140,
     });
 
     animation.moveAndFade({
       type: expand ? 'in' : 'out',
       animation: settingsBtnPostionY,
       opacity: settingsBtnOpacity,
-      offset: -80,
+      offset: -70,
     });
 
     // moveAndFadeDiagonally({
@@ -144,18 +142,14 @@ const ButtonMore = ({
           onPress={triggerExpand}
         />
       )}
-      <View style={styles.btnMore}>
+      <Animated.View style={[styles.btnMore, {transform: [{rotate: spin}]}]}>
         <Button
-          round
+          borderRadius={27}
           elevated={!!expand}
-          icon={
-            <Animated.View style={{transform: [{rotate: spin}]}}>
-              <MoreHoriz {...iconProps} />
-            </Animated.View>
-          }
+          icon={<MoreHoriz {...iconProps} />}
           onPress={triggerExpand}
         />
-      </View>
+      </Animated.View>
       {/* Complete */}
       {currentData?.count > 0 && expand && (
         <Animated.View
@@ -167,7 +161,7 @@ const ButtonMore = ({
             },
           ]}>
           <Button
-            round
+            borderRadius={27}
             icon={<FloppyDisk {...iconProps} />}
             onPress={_handleSave}
           />
@@ -186,7 +180,11 @@ const ButtonMore = ({
             opacity: listBtnOpacity,
           },
         ]}>
-        <Button round icon={<List {...iconProps} />} onPress={_handleList} />
+        <Button
+          borderRadius={27}
+          icon={<List {...iconProps} />}
+          onPress={_handleList}
+        />
       </Animated.View>
 
       {/* Settings */}
@@ -202,7 +200,7 @@ const ButtonMore = ({
           },
         ]}>
         <Button
-          round
+          borderRadius={27}
           icon={<Settings {...iconProps} />}
           onPress={_handleSettings}
         />
@@ -218,7 +216,7 @@ const ButtonMore = ({
           },
         ]}>
         <Button
-          round
+          borderRadius={27}
           icon={<ClockRotateRight {...iconProps} />}
           onPress={_handleRepeat}
         />

@@ -2,9 +2,9 @@ import {Animated, Easing} from 'react-native';
 import {COUNTER_TYPE} from '../components/constants';
 
 export default {
-  timing: function ({animationValue, duration = 2000}) {
+  timing: function ({animationValue, duration = 2000, toValue = 0}) {
     Animated.timing(animationValue, {
-      toValue: 0,
+      toValue,
       duration,
       useNativeDriver: true,
     }).start();

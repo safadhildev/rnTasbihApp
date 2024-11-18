@@ -44,7 +44,7 @@ export const HEADER_CTA = {
 };
 
 export const COUNTER_TYPE = {
-  CLICKER: 'clicker',
+  TAP: 'tap',
   SWIPE_UP: 'swipeUp',
   SWIPE_DOWN: 'swipeDown',
   SWIPE_RIGHT: 'swipeRight',
@@ -53,8 +53,8 @@ export const COUNTER_TYPE = {
 
 export const COUNTER_TYPE_ARRAY = [
   {
-    value: COUNTER_TYPE.CLICKER,
-    label: 'Clicker',
+    value: COUNTER_TYPE.TAP,
+    label: 'Tap',
   },
   {
     value: COUNTER_TYPE.SWIPE_UP,

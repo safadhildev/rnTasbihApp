@@ -1,4 +1,8 @@
 {
-  "name": "rmTasbihApp",
-  "displayName": "rmTasbihApp"
+  "name": "myTasbih",
+  "displayName": "myTasbih",
+  "react-native-google-mobile-ads": {
+    "android_app_id": "ca-app-pub-1493676932109072~7843704760",
+    "ios_app_id": "ca-app-pub-1493676932109072~7843704760"
+  }
 }

@@ -30,7 +30,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     borderWidth: 1,
     borderColor: themes[theme].primaryButtonBackground,
-    borderRadius: 4,
+    borderRadius: 10,
     backgroundColor: checked
       ? themes[theme]?.primaryButtonBackground
       : 'transparent',

@@ -1,10 +1,11 @@
-import React, {useEffect, useRef, useState} from 'react';
-import {Animated, PanResponder, StyleSheet, Text, View} from 'react-native';
+import {OneFingerSelectHandGesture} from 'iconoir-react-native';
+import React, {useEffect, useRef} from 'react';
+import {Animated, PanResponder, StyleSheet, View} from 'react-native';
 import animation from '../../utils/animation';
 import themes from '../../utils/themes';
 import {COUNTER_TYPE, Z_INDEX} from '../constants';
 import {useLocalContext} from '../context';
-import {OneFingerSelectHandGesture} from 'iconoir-react-native';
+import Text from '../Text';
 
 let swipeAnimation = null;
 
@@ -50,14 +51,13 @@ const SwipeCounter = ({
   const _startInfoAnimation = () => {
     animation.timing({
       animationValue: infoAnimValue,
-      toValue: 0,
+      toValue: 0.5,
       duration: 1500,
       useNativeDriver: true,
     });
   };
 
   const _startIconAnimation = () => {
-    console.log('[DEBUG] >> _startIconAnimation >>');
     swipeAnimation = animation.swipeHint({
       direction,
       value: iconPosition,
@@ -76,10 +76,7 @@ const SwipeCounter = ({
   };
 
   const _handleSwipe = () => {
-    console.log('[DEBUG] >>  handleSWIPEE');
     if (onSwipe && typeof onSwipe === 'function') {
-      console.log('[DEBUG] >>  handleSWIPEE >> onSwipe');
-
       if (!showMore) {
         _startInfoAnimation();
         _handleAnimation();
@@ -95,11 +92,11 @@ const SwipeCounter = ({
       _startIconAnimation();
     }
 
-    return () => {
-      if (swipeAnimation) {
-        swipeAnimation.stop();
-      }
-    };
+    // return () => {
+    //   if (swipeAnimation) {
+    //     swipeAnimation.stop();
+    //   }
+    // };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [currentData?.count, direction]);
 
@@ -136,13 +133,13 @@ const SwipeCounter = ({
   const _getHintText = () => {
     switch (direction) {
       case COUNTER_TYPE.SWIPE_UP:
-        return 'Swipe up to start';
+        return 'Swipe up';
       case COUNTER_TYPE.SWIPE_DOWN:
-        return 'Swipe down to start';
+        return 'Swipe down';
       case COUNTER_TYPE.SWIPE_LEFT:
-        return 'Swipe left to start';
+        return 'Swipe left';
       case COUNTER_TYPE.SWIPE_RIGHT:
-        return 'Swipe right to start';
+        return 'Swipe right';
       default:
         return 'Swipe to start';
     }

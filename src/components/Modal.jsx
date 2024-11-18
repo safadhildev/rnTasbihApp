@@ -97,9 +97,9 @@ const styles = StyleSheet.create({
     width: '100%',
     minHeight: 250,
     maxHeight: 475,
-    paddingHorizontal: 15,
-    paddingVertical: 15,
-    borderRadius: 20,
+    paddingHorizontal: 20,
+    paddingVertical: 20,
+    borderRadius: 30,
     justifyContent: 'space-between',
     shadowColor: '#000000',
     shadowOffset: {

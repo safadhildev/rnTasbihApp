@@ -11,6 +11,7 @@ const HintIcon = ({
   customContainerStyle,
   iconStyle,
   size = 20,
+  color,
 }) => {
   const {theme} = useLocalContext();
 
@@ -77,8 +78,6 @@ const HintIcon = ({
     return null;
   }
 
-  console.log('[DEBUG] >> ', {position1});
-
   return (
     <Animated.View
       style={[
@@ -91,7 +90,7 @@ const HintIcon = ({
           : [...position2.getTranslateTransform()],
       ]}>
       <OneFingerSelectHandGesture
-        color={themes[theme]?.infoText}
+        color={color ?? themes[theme]?.primaryButtonText}
         width={size}
         height={size}
         style={iconStyle ?? [styles.infoIcon(counterType)]}
