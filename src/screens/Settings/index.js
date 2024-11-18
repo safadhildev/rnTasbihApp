@@ -1,14 +1,14 @@
-import {useNavigation} from '@react-navigation/native';
+import { BANNER_ADD_UNIT_ID } from '@env';
+import { useNavigation } from '@react-navigation/native';
 import React from 'react';
-import {ScrollView, StyleSheet, View} from 'react-native';
+import { ScrollView, StyleSheet, View } from 'react-native';
+import { BannerAd, BannerAdSize, TestIds } from 'react-native-google-mobile-ads';
 import BackgroundView from '../../components/BackgroundView';
 import Header from '../../components/Header';
 import Text from '../../components/Text';
 import themes from '../../utils/themes';
-import ThemeSettings from './ThemeSettings';
 import CounterSettings from './CounterSettings';
-import {BannerAd, BannerAdSize, TestIds} from 'react-native-google-mobile-ads';
-import {BANNER_ADD_UNIT_ID} from '@env';
+import ThemeSettings from './ThemeSettings';
 
 const adUnitId = __DEV__ ? TestIds.BANNER : BANNER_ADD_UNIT_ID;
 
@@ -28,7 +28,7 @@ const Settings = () => {
             <ThemeSettings />
             <CounterSettings />
           </View>
-          <Text style={styles.appVersion}>v0.0.1</Text>
+          <Text style={styles.appVersion}>v1.0.0</Text>
         </ScrollView>
 
         <View style={styles.bannerAd}>
