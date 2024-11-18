@@ -127,7 +127,7 @@ android {
             dimension "env"
             resValue "string", "app_name", app_name_dev
         }
-        prod {
+        production {
             namespace "com.myTasbih"
             applicationId "com.myTasbih"
             signingConfig signingConfigs.release
