@@ -1,6 +1,6 @@
 import {useNavigation} from '@react-navigation/native';
-import React, {useState} from 'react';
-import {I18nManager, StyleSheet, View} from 'react-native';
+import React, {useRef, useState} from 'react';
+import {I18nManager, Platform, StyleSheet, View} from 'react-native';
 import ButtonMore from '../../components/ButtonMore.jsx';
 import {SWIPER_TYPES, Z_INDEX} from '../../components/constants.js';
 import {useLocalContext} from '../../components/context';
@@ -13,8 +13,16 @@ import date from '../../utils/Date.js';
 import useGlobalFucntion from '../../utils/hooks/useGlobal.js';
 import useTime from '../../utils/hooks/useTime.js';
 import themes from '../../utils/themes.js';
+import {
+  BannerAd,
+  BannerAdSize,
+  TestIds,
+  useForeground,
+} from 'react-native-google-mobile-ads';
+import {BANNER_ADD_UNIT_ID} from '@env';
 
 const Home = () => {
+  const bannerRef = useRef(null);
   const navigation = useNavigation();
   const {isDev, theme, currentData, updateContext, counterType, onCount} =
     useLocalContext();
@@ -73,6 +81,12 @@ const Home = () => {
     navigation.navigate(SETTINGS);
   };
 
+  useForeground(() => {
+    if (Platform.OS === 'ios') {
+      bannerRef.current?.load();
+    }
+  });
+
   const renderCounterByType = () => {
     if (SWIPER_TYPES.includes(counterType)) {
       return (
@@ -117,6 +131,17 @@ const Home = () => {
       {isDev && (
         <Text style={styles.infoDev(theme)}>ID: {currentData?.id}</Text>
       )}
+
+      <BannerAd
+        ref={bannerRef}
+        unitId={__DEV__ ? TestIds.BANNER : BANNER_ADD_UNIT_ID}
+        size={BannerAdSize.ANCHORED_ADAPTIVE_BANNER}
+        onPaid={event => {
+          if (__DEV__) {
+            console.log('Banner revenue', event.value, event.currency);
+          }
+        }}
+      />
     </View>
   );
 };
