@@ -1,5 +1,9 @@
 import React, { useEffect, useRef } from 'react';
 import { Platform, StatusBar } from 'react-native';
+import {
+  SafeAreaProvider,
+  useSafeAreaInsets,
+} from 'react-native-safe-area-context';
 import BackgroundView from './src/components/BackgroundView';
 import AppContext, { useLocalContext } from './src/components/context';
 import Navigator from './src/routes';
@@ -8,6 +12,9 @@ import themes from './src/utils/themes';
 
 const Root = () => {
   const {theme} = useLocalContext();
+  // Android 16 (targetSdk 36) always draws edge-to-edge, so keep content out
+  // from under the system bars while the background fills behind them
+  const insets = useSafeAreaInsets();
   const themeRef = useRef(theme);
   themeRef.current = theme;
 
@@ -26,7 +33,13 @@ const Root = () => {
   );
 
   return (
-    <BackgroundView>
+    <BackgroundView
+      style={{
+        paddingTop: insets.top,
+        paddingBottom: insets.bottom,
+        paddingLeft: insets.left,
+        paddingRight: insets.right,
+      }}>
       <StatusBar
         barStyle={themes[theme]?.barStyle ?? 'dark-content'}
         backgroundColor={themes[theme]?.background}
@@ -38,9 +51,11 @@ const Root = () => {
 
 const App = () => {
   return (
-    <AppContext>
-      <Root />
-    </AppContext>
+    <SafeAreaProvider>
+      <AppContext>
+        <Root />
+      </AppContext>
+    </SafeAreaProvider>
   );
 };
 

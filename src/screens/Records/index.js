@@ -274,10 +274,12 @@ const Records = () => {
     };
 
     if (selectMode) {
-      BackHandler.addEventListener('hardwareBackPress', _handleBackPress);
+      const subscription = BackHandler.addEventListener(
+        'hardwareBackPress',
+        _handleBackPress,
+      );
 
-      return () =>
-        BackHandler.removeEventListener('hardwareBackPress', _handleBackPress);
+      return () => subscription.remove();
     }
   }, [selectMode]);
 
