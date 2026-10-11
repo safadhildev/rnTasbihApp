@@ -50,5 +50,5 @@ export const convertHexToRGBa = hex => {
   const hexObject = parseHex(hashlessHex);
   const decimalObject = hexesToDecimals(hexObject);
 
-  return formatRgb(decimalObject, a);
+  return formatRgb(decimalObject);
 };
