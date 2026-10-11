@@ -34,6 +34,35 @@ const ThemeSettings = () => {
     }
   };
 
+  const _renderItem = ({item}) => {
+    const itemTheme = themes[item.value];
+
+    return (
+      <Fragment>
+        <Button
+          text={item.label}
+          onPress={() => {
+            _handleChangeTheme(item.value);
+          }}
+          style={{backgroundColor: itemTheme?.primaryButtonBackground}}
+          textStyle={styles.buttonText(item.value)}
+          rightIcon={
+            item.value === theme && (
+              <Check
+                color={themes[theme]?.primaryButtonText}
+                width={20}
+                height={20}
+                strokeWidth={2}
+              />
+            )
+          }
+          iconPosition={ICON_POSITION.RIGHT}
+        />
+        <Gap size={10} />
+      </Fragment>
+    );
+  };
+
   return (
     <Fragment>
       <View style={styles.section(theme)}>
@@ -65,29 +94,7 @@ const ThemeSettings = () => {
             marginHorizontal: -20,
             paddingHorizontal: 20,
           }}
-          renderItem={({item}) => (
-            <Fragment>
-              <Button
-                text={item.label}
-                onPress={() => {
-                  _handleChangeTheme(item.value);
-                }}
-                textStyle={styles.buttonText(theme)}
-                rightIcon={
-                  item.value === theme && (
-                    <Check
-                      color={themes[theme]?.primaryButtonText}
-                      width={20}
-                      height={20}
-                      strokeWidth={2}
-                    />
-                  )
-                }
-                iconPosition={ICON_POSITION.RIGHT}
-              />
-              <Gap size={10} />
-            </Fragment>
-          )}
+          renderItem={_renderItem}
         />
       </Modal>
     </Fragment>
@@ -122,6 +129,7 @@ const styles = StyleSheet.create({
   buttonText: theme => ({
     textTransform: 'capitalize',
     textAlign: 'left',
+    color: themes[theme]?.primaryButtonText,
   }),
 });
 
