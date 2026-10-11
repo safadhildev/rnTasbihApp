@@ -29,8 +29,8 @@ const date = {
   },
   getHijriDate: () => {
     // const date = momentHijri().format('iYYYY/iMM/iDD');
-    const date = momentHijri().format('iDD/iMMMM/iYYYY');
-    return numLatinToAr(date);
+    const todayHijriDate = momentHijri().format('iDD/iMMMM/iYYYY');
+    return numLatinToAr(todayHijriDate);
   },
   getHijriMonth: () => {
     const mth = momentHijri().format('iMMMM');
