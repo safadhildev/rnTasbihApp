@@ -4,6 +4,7 @@ import {ScrollView, StyleSheet, View} from 'react-native';
 import AdMobBanner from '../../components/AdMob';
 import Header from '../../components/Header';
 import Text from '../../components/Text';
+import {APP_VERSION_LABEL} from '../../utils/appVersion';
 import {showIfEligible as showInterstitial} from '../../utils/interstitial';
 import themes from '../../utils/themes';
 import CounterSettings from './CounterSettings';
@@ -38,7 +39,7 @@ const Settings = () => {
             <ThemeSettings />
             <CounterSettings />
           </View>
-          <Text style={styles.appVersion}>v1.0.0</Text>
+          <Text style={styles.appVersion}>{APP_VERSION_LABEL}</Text>
         </ScrollView>
         <AdMobBanner />
       </View>

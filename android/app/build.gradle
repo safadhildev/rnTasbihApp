@@ -77,6 +77,7 @@ def jscFlavor = 'io.github.react-native-community:jsc-android:2026004.+'
 
 def app_name = "MyTasbih"
 def app_name_dev = "MyTasbih [DEV]"
+def appVersion = new groovy.json.JsonSlurper().parse(file("${rootDir}/../version.json"))
 
 android {
     namespace "com.myTasbih"
@@ -105,8 +106,8 @@ android {
         applicationId "com.myTasbih"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 3
-        versionName "1.0"
+        versionCode appVersion.build
+        versionName appVersion.version
         multiDexEnabled true
         // Real devices are ARM; x86 is emulator-only. Filtering here (not via
         // packaging excludes) is needed because the RN Gradle plugin force-includes
