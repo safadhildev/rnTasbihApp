@@ -1,79 +1,148 @@
-This is a new [**React Native**](https://reactnative.dev) project, bootstrapped using [`@react-native-community/cli`](https://github.com/react-native-community/cli).
+<div align="center">
 
-# Getting Started
+# MyTasbih
 
->**Note**: Make sure you have completed the [React Native - Environment Setup](https://reactnative.dev/docs/environment-setup) instructions till "Creating a new application" step, before proceeding.
+**A simple, distraction-free digital tasbih for your daily dhikr.**
 
-## Step 1: Start the Metro Server
+Count with a tap or a swipe, save each session, and keep a searchable history of everything you've recited, in three calm themes.
 
-First, you will need to start **Metro**, the JavaScript _bundler_ that ships _with_ React Native.
+[![Latest release](https://img.shields.io/github/v/release/safadhildev/rnTasbihApp?label=download&color=4caf50)](https://github.com/safadhildev/rnTasbihApp/releases/latest)
+![Android 7.0+](https://img.shields.io/badge/Android-7.0%2B-3ddc84?logo=android&logoColor=white)
+![React Native 0.86](https://img.shields.io/badge/React%20Native-0.86-61dafb?logo=react&logoColor=white)
+![16 KB page size ready](https://img.shields.io/badge/16%20KB%20page%20size-ready-blue)
 
-To start Metro, run the following command from the _root_ of your React Native project:
+<img src="docs/media/home-count.png" width="230" alt="Tap counter showing 33" />&nbsp;
+<img src="docs/media/records.png" width="230" alt="Records list with saved dhikr" />&nbsp;
+<img src="docs/media/home-midnight.png" width="230" alt="Counter in the Midnight theme" />
+
+</div>
+
+---
+
+## Features
+
+- **Tap anywhere to count.** The whole screen is the button, so you can count without looking.
+- **Or swipe instead.** Choose Swipe Up, Down, Left or Right if you prefer a gesture.
+- **Save your dhikr.** Name a session (Subhanallah, Alhamdulillah…) and save the count with a timestamp.
+- **Records history.** Search, sort by date, edit, and multi-select to delete saved sessions.
+- **Gregorian and Hijri dates** shown together on the home screen and on every record.
+- **Three themes:** Lime, Midnight and Forest.
+- **Works offline.** All records are stored on your device.
+- **Built for modern Android:** targets Android 16 (API 36), draws edge-to-edge, and supports 16 KB memory page size devices.
+
+## See it in action
+
+<table>
+  <tr>
+    <th>Tap, count &amp; save</th>
+    <th>Switch themes</th>
+    <th>Swipe to count</th>
+  </tr>
+  <tr>
+    <td><img src="docs/media/clicker.gif" width="240" alt="Tapping to count to 33, saving it as Subhanallah and opening Records" /></td>
+    <td><img src="docs/media/themes.gif" width="240" alt="Switching between Midnight, Forest and Lime themes" /></td>
+    <td><img src="docs/media/swipe.gif" width="240" alt="Choosing Swipe Up and swiping to count" /></td>
+  </tr>
+  <tr>
+    <td align="center"><a href="docs/media/clicker.mp4">▶ MP4</a></td>
+    <td align="center"><a href="docs/media/themes.mp4">▶ MP4</a></td>
+    <td align="center"><a href="docs/media/swipe.mp4">▶ MP4</a></td>
+  </tr>
+</table>
+
+## Screenshots
+
+### Counting
+
+| Tap counter | Quick actions | Swipe counter |
+| :---: | :---: | :---: |
+| <img src="docs/media/home-count.png" width="230" alt="Tap counter" /> | <img src="docs/media/home-menu.png" width="230" alt="Expanded action menu: save, records, settings, reset" /> | <img src="docs/media/swiper.png" width="230" alt="Swipe up counter" /> |
+
+### Saving &amp; records
+
+| Save a dhikr | Records | Edit a record | Select &amp; delete |
+| :---: | :---: | :---: | :---: |
+| <img src="docs/media/save.png" width="200" alt="Save Dhikr dialog" /> | <img src="docs/media/records.png" width="200" alt="Records list" /> | <img src="docs/media/edit.png" width="200" alt="Edit Dhikr dialog with count and dates" /> | <img src="docs/media/records-select.png" width="200" alt="Records in select mode with delete button" /> |
+
+### Themes &amp; settings
+
+| Midnight | Forest | Theme picker | Counter type |
+| :---: | :---: | :---: | :---: |
+| <img src="docs/media/records-midnight.png" width="200" alt="Records in the Midnight theme" /> | <img src="docs/media/records-forest.png" width="200" alt="Records in the Forest theme" /> | <img src="docs/media/settings-theme.png" width="200" alt="Choose Theme sheet" /> | <img src="docs/media/settings-counter.png" width="200" alt="Choose Counter Type sheet" /> |
+
+## Download
+
+Get the latest APK from the **[Releases page](https://github.com/safadhildev/rnTasbihApp/releases/latest)**, open it on your phone and allow *Install unknown apps* if prompted.
+
+- One universal APK for both 32-bit and 64-bit ARM phones
+- Requires **Android 7.0 (API 24)** or newer
+
+---
+
+## Development
+
+### Tech stack
+
+| | |
+| --- | --- |
+| Framework | React Native 0.86 (New Architecture, Hermes), React 19 |
+| Navigation | React Navigation 6 (native stack) |
+| Storage | `@react-native-async-storage/async-storage` |
+| Dates | `moment` + `moment-hijri` |
+| UI | `react-native-svg`, `iconoir-react-native`, `react-native-modal`, `react-native-safe-area-context` |
+| Ads | `react-native-google-mobile-ads` (test ads in debug builds) |
+
+### Prerequisites
+
+- Node **22.11+** and Yarn 1.x
+- JDK **17**
+- Android SDK **36** with NDK **27.1.12297006**
+- Set up your machine with the [React Native environment guide](https://reactnative.dev/docs/set-up-your-environment)
+
+### Setup
 
 ```bash
-# using npm
-npm start
+yarn install
 
-# OR using Yarn
-yarn start
+# Environment files (git-ignored), picked by ENV_FILE (defaults to development)
+cp env.example .env.development
+cp env.example .env.production
 ```
 
-## Step 2: Start your Application
-
-Let Metro Bundler run in its _own_ terminal. Open a _new_ terminal from the _root_ of your React Native project. Run the following command to start your _Android_ or _iOS_ app:
-
-### For Android
+### Run
 
 ```bash
-# using npm
-npm run android
-
-# OR using Yarn
-yarn android
+yarn start                     # Metro
+yarn android:dev:debug         # dev flavor (com.myTasbih.dev), test ads
+yarn android:production:debug  # production flavor (com.myTasbih)
 ```
 
-### For iOS
+### Test & lint
 
 ```bash
-# using npm
-npm run ios
-
-# OR using Yarn
-yarn ios
+yarn test
+yarn lint
 ```
 
-If everything is set up _correctly_, you should see your new app running in your _Android Emulator_ or _iOS Simulator_ shortly provided you have set up your emulator/simulator correctly.
+### Release build
 
-This is one way to run your app — you can also run it directly from within Android Studio and Xcode respectively.
+Release signing reads `UPLOAD_STORE_FILE`, `UPLOAD_STORE_PASSWORD`, `UPLOAD_KEY_ALIAS` and `UPLOAD_KEY_PASSWORD` from `~/.gradle/gradle.properties`. Keystores and env files are never committed.
 
-## Step 3: Modifying your App
+```bash
+cd android
+ENV_FILE=production ./gradlew assembleProductionRelease   # APK → app/build/outputs/apk/production/release/
+ENV_FILE=production ./gradlew bundleProductionRelease     # AAB for Google Play
+```
 
-Now that you have successfully run the app, let's modify it.
+The app version lives in [`version.json`](version.json) (`version` is the display name, `build` is the Android `versionCode`). Bump it before each release.
 
-1. Open `App.tsx` in your text editor of choice and edit some lines.
-2. For **Android**: Press the <kbd>R</kbd> key twice or select **"Reload"** from the **Developer Menu** (<kbd>Ctrl</kbd> + <kbd>M</kbd> (on Window and Linux) or <kbd>Cmd ⌘</kbd> + <kbd>M</kbd> (on macOS)) to see your changes!
+### Project structure
 
-   For **iOS**: Hit <kbd>Cmd ⌘</kbd> + <kbd>R</kbd> in your iOS Simulator to reload the app and see your changes!
-
-## Congratulations! :tada:
-
-You've successfully run and modified your React Native App. :partying_face:
-
-### Now what?
-
-- If you want to add this new React Native code to an existing application, check out the [Integration guide](https://reactnative.dev/docs/integration-with-existing-apps).
-- If you're curious to learn more about React Native, check out the [Introduction to React Native](https://reactnative.dev/docs/getting-started).
-
-# Troubleshooting
-
-If you can't get this to work, see the [Troubleshooting](https://reactnative.dev/docs/troubleshooting) page.
-
-# Learn More
-
-To learn more about React Native, take a look at the following resources:
-
-- [React Native Website](https://reactnative.dev) - learn more about React Native.
-- [Getting Started](https://reactnative.dev/docs/environment-setup) - an **overview** of React Native and how setup your environment.
-- [Learn the Basics](https://reactnative.dev/docs/getting-started) - a **guided tour** of the React Native **basics**.
-- [Blog](https://reactnative.dev/blog) - read the latest official React Native **Blog** posts.
-- [`@facebook/react-native`](https://github.com/facebook/react-native) - the Open Source; GitHub **repository** for React Native.
+```
+src/
+├── assets/       # App logo
+├── components/   # Counter (Clicker, Swiper), modals, buttons, BackgroundView, context
+├── routes/       # Native stack navigator
+├── screens/      # Home, Records, Settings, SplashScreen
+└── utils/        # Themes, Hijri/Gregorian dates, storage, AdMob helpers
+```
