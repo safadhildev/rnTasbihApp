@@ -1,4 +1,4 @@
-import {NavArrowDown, NavArrowUp} from 'iconoir-react-native';
+import {NavArrowDown, NavArrowUp} from './icons';
 import React, {useEffect, useState} from 'react';
 import {FlatList, Keyboard, StyleSheet, View} from 'react-native';
 import {onSearch} from '../utils/common';

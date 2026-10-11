@@ -4,7 +4,7 @@ import {
   List,
   MoreHoriz,
   Settings,
-} from 'iconoir-react-native';
+} from './icons';
 import React, {useEffect, useRef} from 'react';
 import {
   Animated,

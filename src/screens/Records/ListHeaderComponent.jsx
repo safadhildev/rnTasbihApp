@@ -1,4 +1,4 @@
-import {ArrowDown, ArrowUp, Check, Search, Sort} from 'iconoir-react-native';
+import {ArrowDown, ArrowUp, Check, Search, Sort} from '../../components/icons';
 import React, {Fragment, useState} from 'react';
 import {FlatList, StyleSheet, TouchableOpacity, View} from 'react-native';
 import {DIRECTION, SORT_OPTIONS, SORT_ORDER} from '../../components/constants';

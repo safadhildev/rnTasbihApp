@@ -1,5 +1,5 @@
 import { useNavigation } from '@react-navigation/native';
-import { Edit, Trash } from 'iconoir-react-native';
+import { Edit, Trash } from '../../components/icons';
 import React, { useEffect, useState } from 'react';
 import {
   BackHandler,

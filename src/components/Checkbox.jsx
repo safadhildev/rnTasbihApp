@@ -1,4 +1,4 @@
-import {Check} from 'iconoir-react-native';
+import {Check} from './icons';
 import React from 'react';
 import {StyleSheet, TouchableOpacity, View} from 'react-native';
 import {useLocalContext} from './context';

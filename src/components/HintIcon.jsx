@@ -1,4 +1,4 @@
-import {OneFingerSelectHandGesture} from 'iconoir-react-native';
+import {OneFingerSelectHandGesture} from './icons';
 import React, {useEffect, useRef, useState} from 'react';
 import {Animated, StyleSheet} from 'react-native';
 import themes from '../utils/themes';

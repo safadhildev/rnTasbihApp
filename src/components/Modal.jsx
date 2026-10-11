@@ -12,7 +12,7 @@ import Text from './Text';
 import Divider from './Divider';
 import Gap from './Gap';
 import themes from '../utils/themes';
-import {Xmark} from 'iconoir-react-native';
+import {Xmark} from './icons';
 
 const Modal = ({
   children,
