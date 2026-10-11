@@ -87,7 +87,7 @@ const styles = StyleSheet.create({
   inputWrapper: theme => ({
     borderWidth: 2,
     borderColor: themes[theme]?.inputBorder,
-    borderRadius: 20,
+    borderRadius: 10,
     minHeight: 40,
     position: 'relative',
     overflow: 'hidden',
@@ -98,7 +98,7 @@ const styles = StyleSheet.create({
     borderWidth: 2,
     borderColor: themes[theme]?.inputBorder,
     position: 'relative',
-    borderRadius: 20,
+    borderRadius: 10,
     height: 40,
     overflow: 'hidden',
     flexDirection: 'row',

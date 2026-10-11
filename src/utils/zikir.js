@@ -1,39 +1,27 @@
 export const zikir = [
   {
     key: 'tasbih',
-    romanized: 'Subhanallah',
+    romanized: 'Tasbih (Subḥānallāh)',
     arabic: 'سُبْحَانَ ٱللَّٰهِ‎',
     meaning: 'Maha Suci Allah',
   },
   {
     key: 'tahmid',
-    romanized: 'Alhamdulillah',
+    romanized: 'Tahmid (Alḥamdulillāh)',
     arabic: 'اَلْحَمْدُ للَّهِ',
-    meaning: 'Segala puji bagi Allah Ta’ala',
+    meaning: 'Segala puji bagi Allah.',
   },
   {
     key: 'takbir',
-    romanized: 'Allahu Akbar',
+    romanized: 'Takbir (Allāhu akbar)',
     arabic: 'اللهُ أكْبَرُ',
     meaning: 'Maha Suci Allah',
   },
   {
-    key: 'tahlil',
-    romanized: 'La ilaha illallah',
-    arabic: 'لا إله إلاّ الله',
-    meaning: 'Tiada Tuhan selain Allah',
-  },
-  {
     key: 'istighfar',
-    romanized: 'Astaghfirullah',
+    romanized: 'Istighfar (Astaghfirullāh)',
     arabic: 'أَسْتَغْفِرُ ٱللَّٰ',
     meaning: 'Aku memohon ampun kepada Allah',
-  },
-  {
-    key: 'hawqolah',
-    romanized: 'La hawla wa la quwwata illa billah',
-    arabic: 'لَا حَوْلَ وَلَا قُوَّةَ إِلَّا بِٱللَّٰ',
-    meaning: 'Tidak ada daya dan kekuatan kecuali daya dan kekuatan dari Allah',
   },
 ];
 

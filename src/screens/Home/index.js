@@ -1,32 +1,37 @@
-import {useNavigation} from '@react-navigation/native';
-import React, {useEffect, useState} from 'react';
-import {StyleSheet, View} from 'react-native';
+import { useNavigation } from '@react-navigation/native';
+import React, { useRef, useState } from 'react';
+import { I18nManager, Platform, StyleSheet, View } from 'react-native';
+import { useForeground } from 'react-native-google-mobile-ads';
+import AdMobBanner from '../../components/AdMob.jsx';
 import ButtonMore from '../../components/ButtonMore.jsx';
-import Clicker from '../../components/Clicker.jsx';
-import {useLocalContext} from '../../components/context';
+import { SWIPER_TYPES, Z_INDEX } from '../../components/constants.js';
+import { useLocalContext } from '../../components/context';
+import Clicker from '../../components/Counter/Clicker.jsx';
+import Swiper from '../../components/Counter/Swiper.jsx';
 import SaveModal from '../../components/SaveModal.jsx';
 import Text from '../../components/Text.jsx';
-import {RECORDS, SETTINGS} from '../../routes/constants.js';
+import { RECORDS, SETTINGS } from '../../routes/constants.js';
 import date from '../../utils/Date.js';
 import useGlobalFucntion from '../../utils/hooks/useGlobal.js';
+import useTime from '../../utils/hooks/useTime.js';
 import themes from '../../utils/themes.js';
 
 const Home = () => {
+  const bannerRef = useRef(null);
   const navigation = useNavigation();
-  const {isDev, theme, currentData, updateContext} = useLocalContext();
+  const {isDev, theme, currentData, updateContext, counterType, onCount} =
+    useLocalContext();
   const {onSaveCount} = useGlobalFucntion();
+  const {currentTime} = useTime();
 
-  const [currentTime, setCurrentTime] = useState(date.getCurrentTime());
   const [showMore, setShowMore] = useState(false);
   const [showSaveModal, setShowSaveModal] = useState(false);
 
-  const _onUpdateClick = () => {
+  const _handleUpdateCount = () => {
     if (showMore) {
       setShowMore(false);
     } else {
-      updateContext({
-        currentData: {...currentData, count: currentData?.count + 1},
-      });
+      onCount();
     }
   };
 
@@ -71,30 +76,46 @@ const Home = () => {
     navigation.navigate(SETTINGS);
   };
 
-  useEffect(() => {
-    const startTimer = setInterval(() => {
-      setCurrentTime(date.getCurrentTime());
-    }, 1000);
+  useForeground(() => {
+    if (Platform.OS === 'ios') {
+      bannerRef.current?.load();
+    }
+  });
 
-    return () => clearInterval(startTimer);
-  }, [currentTime]);
+  const renderCounterByType = () => {
+    if (SWIPER_TYPES.includes(counterType)) {
+      return (
+        <Swiper
+          direction={counterType}
+          onSwipe={_handleUpdateCount}
+          showMore={showMore}
+        />
+      );
+    }
+
+    // default Clicker
+    return <Clicker onPress={_handleUpdateCount} showMore={showMore} />;
+  };
 
   return (
-    <View style={styles.container(theme)}>
-      <Clicker onPress={_onUpdateClick} showMore={showMore} />
-      <SaveModal
-        visible={showSaveModal}
-        onClose={_triggerSaveModal}
-        onSave={_handleSave}
-      />
-      <View style={styles.infoContainer}>
-        <Text style={styles.info(theme)}>
-          {date.getHijriDate()} | {date.getTodayDate()}
-        </Text>
-        <Text style={styles.info(theme)}>{currentTime}</Text>
-        {isDev && <Text style={styles.info(theme)}>ID: {currentData?.id}</Text>}
-      </View>
-      <View pointerEvents="box-none" style={styles.ctaContainer}>
+    <>
+      <View style={styles.container(theme)}>
+        {renderCounterByType()}
+        <SaveModal
+          visible={showSaveModal}
+          onClose={_triggerSaveModal}
+          onSave={_handleSave}
+        />
+        <View style={styles.infoContainer} pointerEvents="none">
+          <View style={styles.infoDateContainer}>
+            <Text style={styles.info(theme)}>
+              {date.getTodayDate('DD MMMM YYYY')}
+            </Text>
+            {/* <Divider direction={DIRECTION.VERTICAL} /> */}
+            <Text style={styles.info(theme, 16)}>{date.getHijriDate()}</Text>
+          </View>
+          <Text style={styles.info(theme, 16)}>{currentTime}</Text>
+        </View>
         <ButtonMore
           expand={showMore}
           triggerExpand={_triggerExpand}
@@ -103,8 +124,12 @@ const Home = () => {
           onList={_handleList}
           onSettings={_handleSettings}
         />
+        {isDev && (
+          <Text style={styles.infoDev(theme)}>ID: {currentData?.id}</Text>
+        )}
       </View>
-    </View>
+      <AdMobBanner />
+    </>
   );
 };
 
@@ -115,15 +140,6 @@ const styles = StyleSheet.create({
     backgroundColor: themes[theme]?.background,
     padding: 20,
   }),
-  ctaContainer: {
-    position: 'absolute',
-    bottom: 10,
-    left: 10,
-    right: 10,
-    zIndex: 2,
-    justifyContent: 'space-between',
-    flexDirection: 'row',
-  },
   ctaWrapper: {
     flexDirection: 'row',
     gap: 5,
@@ -131,17 +147,31 @@ const styles = StyleSheet.create({
   info: (theme, size) => ({
     color: themes[theme]?.infoText,
     fontSize: size ?? 16,
-    textAlign: 'left',
+    textAlign: I18nManager.isRTL ? 'right' : 'left',
+    // textAlign: 'left',
     lineHeight: 24,
     fontWeight: '600',
     opacity: 0.5,
+  }),
+  infoDev: theme => ({
+    position: 'absolute',
+    color: themes[theme]?.infoText,
+    fontWeight: '600',
+    opacity: 0.5,
+    fontSize: 10,
+    bottom: 10,
+    right: 10,
   }),
   infoContainer: {
     position: 'absolute',
     top: 10,
     left: 10,
-    zIndex: 2,
-    flexDirection: 'column',
+    right: 10,
+    zIndex: Z_INDEX.FLOOR,
+  },
+  infoDateContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
   },
 });
 

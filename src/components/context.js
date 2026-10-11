@@ -1,6 +1,6 @@
 import React, {createContext, useContext, useState} from 'react';
 import {THEME_CONSTANT} from '../utils/themes';
-import {SORT_BY, SORT_ORDER} from './constants';
+import {COUNTER_TYPE, SORT_BY, SORT_ORDER} from './constants';
 
 const Context = createContext();
 
@@ -18,6 +18,7 @@ const initialContext = {
     by: SORT_BY.DATE,
     order: SORT_ORDER.DESC,
   },
+  counterType: COUNTER_TYPE.SWIPE_LEFT,
 };
 
 const AppContext = ({children}) => {
@@ -42,11 +43,22 @@ const AppContext = ({children}) => {
     }));
   };
 
+  const _handleUpdateCount = () => {
+    setValues(prev => ({
+      ...prev,
+      currentData: {
+        ...values?.currentData,
+        count: prev.currentData.count + 1,
+      },
+    }));
+  };
+
   return (
     <Context.Provider
       value={{
         ...values,
         updateContext: _handleUpdate,
+        onCount: _handleUpdateCount,
       }}>
       {children}
     </Context.Provider>

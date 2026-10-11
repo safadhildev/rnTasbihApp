@@ -24,31 +24,79 @@ export const ICON_POSITION = {
 const Button = ({
   onPress = () => {},
   text = null,
+  leftIcon = null,
+  rightIcon = null,
   icon = null,
-  iconPosition = ICON_POSITION.LEFT,
-  round = true,
+  round = false,
   type = BUTTON_TYPE.PRIMARY,
   style,
   textStyle,
   disabled = false,
   loading,
+  elevated = false,
+  border = false,
+  borderRadius = 20,
   ...props
 }) => {
   const {theme} = useLocalContext();
 
+  const LeftIcon = React.isValidElement(leftIcon) ? leftIcon : null;
+  const RightIcon = React.isValidElement(rightIcon) ? rightIcon : null;
   const Icon = React.isValidElement(icon) ? icon : null;
+
+  const hasIcon = LeftIcon || RightIcon || Icon;
+
+  if (!text && icon) {
+    return (
+      <View
+        style={StyleSheet.flatten([
+          styles.container(
+            theme,
+            round,
+            type,
+            disabled,
+            elevated,
+            border,
+            borderRadius,
+          ),
+          style,
+        ])}>
+        <TouchableOpacity
+          activeOpacity={0.8}
+          onPress={() => !disabled && onPress()}
+          style={styles.content(
+            (leftIcon || rightIcon) && text ? 'space-between' : 'center',
+            disabled,
+          )}
+          disabled={disabled}
+          {...props}>
+          {loading ? (
+            <ActivityIndicator
+              size="large"
+              color={themes[theme]?.primaryButtonText}
+            />
+          ) : (
+            React.isValidElement(Icon) && (
+              <View style={styles.iconWrapper(text)}>{Icon}</View>
+            )
+          )}
+        </TouchableOpacity>
+      </View>
+    );
+  }
 
   return (
     <View
       style={StyleSheet.flatten([
-        styles.container(theme, iconPosition, round, type, disabled),
+        styles.container(theme, round, type, disabled, elevated),
         style,
       ])}>
       <TouchableOpacity
         activeOpacity={0.8}
         onPress={() => !disabled && onPress()}
         style={styles.content(
-          icon && text ? 'space-between' : 'center',
+          rightIcon && text ? 'space-between' : 'center',
+          'space-between',
           disabled,
         )}
         disabled={disabled}
@@ -60,28 +108,21 @@ const Button = ({
           />
         ) : (
           <Fragment>
-            {React.isValidElement(Icon) &&
-              iconPosition === ICON_POSITION.LEFT && (
-                <View style={styles.iconWrapper(text)}>{icon}</View>
-              )}
+            {React.isValidElement(LeftIcon) && (
+              <View style={styles.iconWrapper(text)}>{leftIcon}</View>
+            )}
             {text && (
               <Text
                 style={StyleSheet.flatten([
-                  styles.text(
-                    type,
-                    theme,
-                    disabled,
-                    React.isValidElement(Icon),
-                  ),
+                  styles.text(type, theme, disabled, hasIcon),
                   textStyle,
                 ])}>
                 {text}
               </Text>
             )}
-            {React.isValidElement(Icon) &&
-              iconPosition === ICON_POSITION.RIGHT && (
-                <View style={styles.iconWrapper(text)}>{icon}</View>
-              )}
+            {React.isValidElement(RightIcon) && (
+              <View style={styles.iconWrapper(text)}>{rightIcon}</View>
+            )}
           </Fragment>
         )}
       </TouchableOpacity>
@@ -90,22 +131,37 @@ const Button = ({
 };
 
 const styles = StyleSheet.create({
-  container: (theme, position, round, type, disabled) => ({
-    ...position,
+  container: (
+    theme,
+    round,
+    type,
+    disabled,
+    elevated,
+    border,
+    borderRadius = 20,
+  ) => ({
     backgroundColor:
       type === BUTTON_TYPE.PRIMARY
         ? themes[theme]?.primaryButtonBackground
         : 'transparent',
     opacity: disabled ? 0.5 : 1,
-    borderRadius: round ? 50 : 20,
-    borderWidth: type === BUTTON_TYPE.OUTLINED ? 2 : 0,
-    borderColor: themes[theme]?.inputBorder,
+    borderRadius: round ? 50 : borderRadius,
+    borderWidth: type === BUTTON_TYPE.OUTLINED ? 2 : border ? 1 : 0,
+    borderColor:
+      type === BUTTON_TYPE.OUTLINED || border
+        ? themes[theme]?.inputBorder
+        : null,
     minWidth: 60,
     minHeight: 60,
     justifyContent: 'center',
     flexDirection: 'row',
     position: 'relatve',
     overflow: 'hidden',
+    ...Platform.select({
+      android: {
+        elevation: elevated ? 2 : 0,
+      },
+    }),
   }),
   disabledPrimary: {
     position: 'absolute',
@@ -135,7 +191,7 @@ const styles = StyleSheet.create({
     color:
       type === BUTTON_TYPE.PRIMARY
         ? themes[theme]?.primaryButtonText
-        : themes[theme]?.inputText,
+        : themes[theme]?.secondaryButtonBackground,
     paddingHorizontal: 10,
     ...Platform.select({
       android: {

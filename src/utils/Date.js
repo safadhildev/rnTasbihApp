@@ -20,15 +20,21 @@ const numLatinToAr = n =>
   n.replace(/\d/g, d => '٠١٢٣٤٥٦٧٨٩'[d]).replace(/\./g, '٫');
 
 const date = {
-  getTodayDate: () => {
-    return moment().format('DD/MM/YYYY');
+  getTodayDate: format => {
+    return moment().format(format ?? 'DD/MM/YYYY');
   },
+
   getHijriDateRoman: () => {
     return momentHijri().format('YYYY/MMMM/DD');
   },
   getHijriDate: () => {
-    const date = momentHijri().format('iYYYY/iMMMM/iDD');
+    // const date = momentHijri().format('iYYYY/iMM/iDD');
+    const date = momentHijri().format('iDD/iMMMM/iYYYY');
     return numLatinToAr(date);
+  },
+  getHijriMonth: () => {
+    const mth = momentHijri().format('iMMMM');
+    return numLatinToAr(mth);
   },
   getTodayDateAndTime: () => {
     return moment().format('DD/MM/YYYY HH:mm:ss');

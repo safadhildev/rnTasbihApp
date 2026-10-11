@@ -6,14 +6,17 @@ import {useLocalContext} from '../../components/context';
 import Divider from '../../components/Divider';
 import Gap from '../../components/Gap';
 import Input from '../../components/Input';
+import Modal from '../../components/Modal';
 import Text from '../../components/Text';
 import themes from '../../utils/themes';
-import Modal from '../../components/Modal';
-import Button from '../../components/Button';
+import Checkbox from '../../components/Checkbox';
 
 const ListHeaderComponent = ({
+  total = 0,
   onChangeSearchValue = () => {},
-  onTriggerSortModal,
+  selectMode = false,
+  selectedIds = [],
+  onSelectAll = () => {},
 }) => {
   const {theme, sort, updateContext} = useLocalContext();
 
@@ -44,6 +47,10 @@ const ListHeaderComponent = ({
     });
   };
 
+  const _getTotalSelected = () => {
+    return selectedIds?.length;
+  };
+
   return (
     <Fragment>
       <View style={styles.inputWrapper(theme)}>
@@ -61,36 +68,59 @@ const ListHeaderComponent = ({
         />
         <Gap size={20} direction={DIRECTION.VERTICAL} />
         <View
-          style={styles.sortWrapper}
+          style={styles.toolsWrapper}
           onLayout={e => {
             if (e?.nativeEvent?.layout) {
               setSortButtonLayout(e?.nativeEvent?.layout);
             }
           }}>
-          <TouchableOpacity style={styles.sort} onPress={_triggerSortModal}>
-            <Sort color={themes[theme]?.inputText} width={20} height={24} />
-            <Text style={styles.sortLabel}>{sort?.by}</Text>
-          </TouchableOpacity>
-          <Gap size={15} direction={DIRECTION.HORIZONTAL} />
-          <Divider direction={DIRECTION.VERTICAL} width="100%" />
-          <Gap size={15} direction={DIRECTION.HORIZONTAL} />
-          <TouchableOpacity style={styles.sort} onPress={_triggerSortOrder}>
-            {sort?.order === SORT_ORDER.ASC ? (
-              <ArrowUp
-                color={themes[theme]?.inputText}
-                width={16}
-                height={24}
-                strokeWidth={2}
+          {selectMode ? (
+            <View style={styles.selectMode}>
+              <Checkbox
+                checked={_getTotalSelected() === total}
+                size={24}
+                onPress={onSelectAll}
               />
-            ) : (
-              <ArrowDown
-                color={themes[theme]?.inputText}
-                width={16}
-                height={24}
-                strokeWidth={2}
-              />
-            )}
-          </TouchableOpacity>
+              <Text style={{color: themes[theme].infoText}}>
+                {_getTotalSelected()} Selected
+              </Text>
+            </View>
+          ) : (
+            <Text
+              style={{
+                color: themes[theme].infoText,
+                marginHorizontal: 8,
+              }}>
+              {total === 1 ? `${total} Record` : `${total} Records`}
+            </Text>
+          )}
+
+          <View style={styles.sortWrapper}>
+            <TouchableOpacity style={styles.sort} onPress={_triggerSortModal}>
+              <Sort color={themes[theme]?.inputText} width={20} height={24} />
+              <Text style={styles.sortLabel}>{sort?.by}</Text>
+            </TouchableOpacity>
+            <Gap size={15} direction={DIRECTION.HORIZONTAL} />
+            <Divider direction={DIRECTION.VERTICAL} width="100%" />
+            <Gap size={15} direction={DIRECTION.HORIZONTAL} />
+            <TouchableOpacity style={styles.sort} onPress={_triggerSortOrder}>
+              {sort?.order === SORT_ORDER.ASC ? (
+                <ArrowUp
+                  color={themes[theme]?.inputText}
+                  width={16}
+                  height={24}
+                  strokeWidth={2}
+                />
+              ) : (
+                <ArrowDown
+                  color={themes[theme]?.inputText}
+                  width={16}
+                  height={24}
+                  strokeWidth={2}
+                />
+              )}
+            </TouchableOpacity>
+          </View>
         </View>
         <Gap size={10} />
         <Divider width="100%" />
@@ -106,12 +136,14 @@ const ListHeaderComponent = ({
           justifyContent: 'flex-start',
         }}
         contentContainerStyle={styles.popupContent(
+          theme,
           sortButtonLayout
-            ? sortButtonLayout?.height + sortButtonLayout?.y + 60
+            ? sortButtonLayout?.height + sortButtonLayout?.y + 50
             : 0,
         )}>
         <FlatList
           data={SORT_OPTIONS}
+          contentContainerStyle={styles.popupContentInner(theme)}
           renderItem={({item, index}) => {
             return (
               <Fragment>
@@ -146,13 +178,9 @@ const ListHeaderComponent = ({
 };
 
 const styles = StyleSheet.create({
-  container: theme => ({
-    flex: 1,
-    // position: 'relative',
-    backgroundColor: themes[theme]?.background,
-  }),
   inputWrapper: theme => ({
     backgroundColor: themes[theme]?.background,
+    paddingHorizontal: 20,
     // paddingBottom: 20,
   }),
   countWrapper: {
@@ -188,7 +216,7 @@ const styles = StyleSheet.create({
   },
   itemWrapper: {
     marginVertical: 5,
-    borderRadius: 10,
+    borderRadius: 20,
   },
   item: theme => ({
     paddingVertical: 10,
@@ -198,6 +226,11 @@ const styles = StyleSheet.create({
   }),
   infoWrapper: {
     flex: 3,
+  },
+  toolsWrapper: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
   },
   sortWrapper: {
     flexDirection: 'row',
@@ -217,17 +250,30 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     paddingTop: 50,
   },
-  popupContent: (yOffset = 0) => ({
+  popupContent: (theme, yOffset = 0) => ({
     alignSelf: 'flex-end',
     width: '40%',
     marginTop: yOffset,
     minHeight: 0,
-    paddingVertical: 15,
-    borderRadius: 15,
+    borderRadius: 20,
+    paddingHorizontal: 0,
+    paddingVertical: 0,
+    borderWidth: 1,
+    borderColor: themes[theme]?.inputPlacholder,
+  }),
+  popupContentInner: theme => ({
+    padding: 10,
+    borderRadius: 20,
   }),
   listItem: {
     flexDirection: 'row',
     justifyContent: 'space-between',
+  },
+  selectMode: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'flex-start',
+    gap: 20,
   },
 });
 

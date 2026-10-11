@@ -9,15 +9,14 @@ import React, {useEffect, useRef} from 'react';
 import {
   Animated,
   Easing,
-  Keyboard,
   StyleSheet,
   TouchableOpacity,
-  TouchableWithoutFeedback,
   View,
 } from 'react-native';
 import animation from '../utils/animation';
 import themes from '../utils/themes';
 import Button from './Button';
+import {Z_INDEX} from './constants';
 import {useLocalContext} from './context';
 
 const ButtonMore = ({
@@ -51,7 +50,7 @@ const ButtonMore = ({
   const settingsBtnPostionY = useRef(new Animated.Value(0)).current;
   const settingsBtnOpacity = useRef(new Animated.Value(0)).current;
 
-  const _handleExpand = () => {
+  const _triggerAnimation = () => {
     Animated.timing(rotateAnimation, {
       toValue: expand ? 1 : 0,
       duration: 200,
@@ -63,28 +62,28 @@ const ButtonMore = ({
       type: expand ? 'in' : 'out',
       animation: repeatBtnPosition,
       opacity: repeatBtnOpacity,
-      offset: 80,
+      offset: 70,
     });
 
     animation.moveAndFade({
       type: expand ? 'in' : 'out',
       animation: completeBtnPosition,
       opacity: completeBtnOpacity,
-      offset: -240,
+      offset: -210,
     });
 
     animation.moveAndFade({
       type: expand ? 'in' : 'out',
       animation: listBtnPostionY,
       opacity: listBtnOpacity,
-      offset: -160,
+      offset: -140,
     });
 
     animation.moveAndFade({
       type: expand ? 'in' : 'out',
       animation: settingsBtnPostionY,
       opacity: settingsBtnOpacity,
-      offset: -80,
+      offset: -70,
     });
 
     // moveAndFadeDiagonally({
@@ -117,7 +116,7 @@ const ButtonMore = ({
   };
 
   useEffect(() => {
-    _handleExpand();
+    _triggerAnimation();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [expand]);
 
@@ -135,19 +134,24 @@ const ButtonMore = ({
   };
 
   return (
-    <React.Fragment>
-      <View style={styles.btnMore}>
-        <Button
-          icon={
-            <Animated.View style={{transform: [{rotate: spin}]}}>
-              <MoreHoriz {...iconProps} />
-            </Animated.View>
-          }
+    <View pointerEvents="box-none" style={styles.container}>
+      {expand && (
+        <TouchableOpacity
+          activeOpacity={1}
+          style={styles.overlay}
           onPress={triggerExpand}
         />
-      </View>
+      )}
+      <Animated.View style={[styles.btnMore, {transform: [{rotate: spin}]}]}>
+        <Button
+          borderRadius={27}
+          elevated={!!expand}
+          icon={<MoreHoriz {...iconProps} />}
+          onPress={triggerExpand}
+        />
+      </Animated.View>
       {/* Complete */}
-      {currentData?.count > 0 && (
+      {currentData?.count > 0 && expand && (
         <Animated.View
           style={[
             styles.button,
@@ -156,7 +160,11 @@ const ButtonMore = ({
               opacity: completeBtnOpacity,
             },
           ]}>
-          <Button icon={<FloppyDisk {...iconProps} />} onPress={_handleSave} />
+          <Button
+            borderRadius={27}
+            icon={<FloppyDisk {...iconProps} />}
+            onPress={_handleSave}
+          />
         </Animated.View>
       )}
 
@@ -172,7 +180,11 @@ const ButtonMore = ({
             opacity: listBtnOpacity,
           },
         ]}>
-        <Button icon={<List {...iconProps} />} onPress={_handleList} />
+        <Button
+          borderRadius={27}
+          icon={<List {...iconProps} />}
+          onPress={_handleList}
+        />
       </Animated.View>
 
       {/* Settings */}
@@ -187,7 +199,11 @@ const ButtonMore = ({
             opacity: settingsBtnOpacity,
           },
         ]}>
-        <Button icon={<Settings {...iconProps} />} onPress={_handleSettings} />
+        <Button
+          borderRadius={27}
+          icon={<Settings {...iconProps} />}
+          onPress={_handleSettings}
+        />
       </Animated.View>
 
       {/* Repeat */}
@@ -200,27 +216,34 @@ const ButtonMore = ({
           },
         ]}>
         <Button
+          borderRadius={27}
           icon={<ClockRotateRight {...iconProps} />}
           onPress={_handleRepeat}
         />
       </Animated.View>
-    </React.Fragment>
+    </View>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
-    position: 'relative',
+    position: 'absolute',
+    top: 0,
+    bottom: 0,
+    left: 0,
+    right: 0,
+    zIndex: Z_INDEX.FLOATING_BUTTON,
+    justifyContent: 'space-between',
+    flexDirection: 'row',
   },
   btnMore: {
-    zIndex: 4,
+    zIndex: Z_INDEX.FLOATING_BUTTON,
     position: 'absolute',
     bottom: 10,
     left: 10,
   },
   button: {
-    zIndex: 3,
+    zIndex: Z_INDEX.FLOATING_BUTTON_ITEMS,
     position: 'absolute',
     bottom: 10,
     left: 10,
@@ -231,8 +254,7 @@ const styles = StyleSheet.create({
     left: 0,
     right: 0,
     bottom: 0,
-    zIndex: 2,
-    backgroundColor: 'red',
+    zIndex: Z_INDEX.OVERLAY,
   },
 });
 

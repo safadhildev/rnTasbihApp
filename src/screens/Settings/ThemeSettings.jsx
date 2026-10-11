@@ -1,13 +1,14 @@
-import { Check, NavArrowDown } from 'iconoir-react-native';
-import React, { Fragment, useState } from 'react';
-import { FlatList, StyleSheet, View } from 'react-native';
-import Button, { BUTTON_TYPE, ICON_POSITION } from '../../components/Button';
-import { useLocalContext } from '../../components/context';
+import {Check, NavArrowDown} from 'iconoir-react-native';
+import React, {Fragment, useState} from 'react';
+import {FlatList, StyleSheet, View} from 'react-native';
+import Button, {BUTTON_TYPE, ICON_POSITION} from '../../components/Button';
+import {useLocalContext} from '../../components/context';
 import Gap from '../../components/Gap';
 import Modal from '../../components/Modal';
 import Text from '../../components/Text';
 import useGlobalFucntion from '../../utils/hooks/useGlobal';
-import themes, { getThemes } from '../../utils/themes';
+import {markPending as markInterstitialPending} from '../../utils/interstitial';
+import themes, {getThemes} from '../../utils/themes';
 
 const ThemeSettings = () => {
   const {theme} = useLocalContext();
@@ -20,9 +21,17 @@ const ThemeSettings = () => {
     setShowThemeDropdown(prev => !prev);
   };
 
-  const _handleChangeTheme = val => {
-    onChangeTheme(val);
-    setShowThemeDropdown(!showThemeDropdown);
+  const _handleChangeTheme = async val => {
+    setShowThemeDropdown(false);
+    try {
+      const changed = await onChangeTheme(val);
+      if (changed) {
+        // shown when the user leaves Settings, not on the tap itself
+        markInterstitialPending();
+      }
+    } catch (e) {
+      console.error(e);
+    }
   };
 
   return (
@@ -33,7 +42,7 @@ const ThemeSettings = () => {
           text={theme}
           onPress={_triggerThemeDropdown}
           type={BUTTON_TYPE.OUTLINED}
-          icon={
+          rightIcon={
             <NavArrowDown
               color={themes[theme]?.inputText}
               width={24}
@@ -42,7 +51,6 @@ const ThemeSettings = () => {
             />
           }
           iconPosition={ICON_POSITION.RIGHT}
-          style={{borderRadius: 10}}
           textStyle={styles.input(theme)}
         />
       </View>
@@ -54,8 +62,8 @@ const ThemeSettings = () => {
         <FlatList
           data={getThemes()}
           style={{
-            marginHorizontal: -10,
-            paddingHorizontal: 10,
+            marginHorizontal: -20,
+            paddingHorizontal: 20,
           }}
           renderItem={({item}) => (
             <Fragment>
@@ -65,7 +73,7 @@ const ThemeSettings = () => {
                   _handleChangeTheme(item.value);
                 }}
                 textStyle={styles.buttonText(theme)}
-                icon={
+                rightIcon={
                   item.value === theme && (
                     <Check
                       color={themes[theme]?.primaryButtonText}
@@ -96,7 +104,7 @@ const styles = StyleSheet.create({
   }),
   sectionLabel: theme => ({
     fontWeight: 'bold',
-    marginHorizontal: 15,
+    marginHorizontal: 20,
     marginBottom: 3,
     position: 'absolute',
     backgroundColor: themes[theme]?.background,

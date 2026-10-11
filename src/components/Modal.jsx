@@ -18,6 +18,7 @@ const Modal = ({
   children,
   isVisible,
   title,
+  description,
   style = null,
   contentContainerStyle = null,
   onClose = () => {},
@@ -68,8 +69,14 @@ const Modal = ({
           {title && (
             <Fragment>
               <Divider width="100%" />
-              <Gap size={5} />
+              {!description && <Gap size={5} />}
             </Fragment>
+          )}
+          {description && (
+            <View>
+              <Text style={styles.description(theme)}>{description}</Text>
+              <Gap size={5} />
+            </View>
           )}
           {children}
         </View>
@@ -89,10 +96,10 @@ const styles = StyleSheet.create({
     backgroundColor: themes[theme]?.cardBackground,
     width: '100%',
     minHeight: 250,
-    maxHeight: 450,
-    paddingHorizontal: 16,
+    maxHeight: 475,
+    paddingHorizontal: 20,
     paddingVertical: 20,
-    borderRadius: 30,
+    borderRadius: 20,
     justifyContent: 'space-between',
     shadowColor: '#000000',
     shadowOffset: {
@@ -114,6 +121,12 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     fontWeight: '600',
   },
+  description: theme => ({
+    color: themes[theme]?.infoText,
+    fontSize: 12,
+    lineHeight: 24,
+    fontWeight: '400',
+  }),
 });
 
 export default Modal;

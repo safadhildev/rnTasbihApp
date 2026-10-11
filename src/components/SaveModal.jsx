@@ -1,5 +1,5 @@
 import React, {useEffect, useRef, useState} from 'react';
-import {Keyboard, StyleSheet, View} from 'react-native';
+import {Dimensions, Keyboard, StyleSheet, View} from 'react-native';
 import themes from '../utils/themes';
 import {zikirOptions} from '../utils/zikir';
 import Button, {BUTTON_TYPE} from './Button';
@@ -8,6 +8,9 @@ import Dropdown from './Dropdown';
 import Gap from './Gap';
 import Modal from './Modal';
 import Text from './Text';
+import {Z_INDEX} from './constants';
+
+const DEVICE_HEIGHT = Dimensions.get('window').height;
 
 const SaveModal = ({
   visible,
@@ -19,7 +22,7 @@ const SaveModal = ({
   loading = false,
   selectedItem = null,
 }) => {
-  const {theme} = useLocalContext();
+  const {theme, isDev} = useLocalContext();
 
   const inputRef = useRef(null);
   const [inputValue, setInputValue] = useState('');
@@ -80,9 +83,11 @@ const SaveModal = ({
       onHideKeyboard={() => {
         setShowDropdown(false);
       }}
-      contentContainerStyle={styles.content(isEdit, showDropdown)}>
-      <View style={{flex: 1}}>
+      style={styles.modal}
+      contentContainerStyle={styles.content(isEdit)}>
+      <View style={styles.contentWrapper}>
         <Dropdown
+          dropdownTitle="Select Dhikr"
           inputRef={inputRef}
           options={zikirOptions}
           showDropdown={showDropdown}
@@ -95,7 +100,9 @@ const SaveModal = ({
 
         {isEdit && !showDropdown && (
           <View style={styles.editInfo}>
-            <Text style={styles.editInfoText}>ID: {selectedItem?.id}</Text>
+            {isDev && (
+              <Text style={styles.editInfoText}>ID: {selectedItem?.id}</Text>
+            )}
             <Text style={styles.editInfoText}>
               Count: {selectedItem?.count}
             </Text>
@@ -113,7 +120,7 @@ const SaveModal = ({
             type={BUTTON_TYPE.SECONDARY}
             round={false}
             style={{flex: 1}}
-            textStyle={{color: themes[theme]?.secondaryButtontext}}
+            textStyle={{color: themes[theme]?.secondaryButtonBackground}}
             onPress={() => onDelete(selectedItem?.id)}
             disabled={loading}
           />
@@ -121,7 +128,7 @@ const SaveModal = ({
         <Button
           text={isEdit ? 'Update' : 'Save'}
           round={false}
-          style={{flex: 3}}
+          style={{flex: 2}}
           onPress={_handleSave}
           disabled={loading}
           loading={loading}
@@ -139,19 +146,21 @@ const styles = StyleSheet.create({
   },
   backdrop: {
     position: 'absolute',
-    zIndex: 1,
+    zIndex: Z_INDEX.OVERLAY,
   },
-  container: {
+  modal: {
     justifyContent: 'center',
-    alignItems: 'center',
-    flex: 1,
+    paddingHorizontal: 10,
+    paddingBottom: 20,
+    marginHorizontal: 0,
+    marginVertical: 0,
   },
   contentWrapper: {
     flex: 1,
   },
   text: theme => ({fontSize: 12, color: themes[theme]?.infoText}),
-  content: (isEdit, showDropdown) => ({
-    minHeight: showDropdown || isEdit ? 350 : 300,
+  content: isEdit => ({
+    minHeight: DEVICE_HEIGHT * (isEdit ? 0.4 : 0.3),
   }),
   ctaWrapper: {
     flexDirection: 'row',
