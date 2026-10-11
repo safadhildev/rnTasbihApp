@@ -190,7 +190,7 @@ const SwipeCounter = ({
 const styles = StyleSheet.create({
   container: {
     position: 'absolute',
-    zIndex: Z_INDEX.UNDER_FLOOR,
+    zIndex: Z_INDEX.FLOOR,
     top: 0,
     left: 0,
     right: 0,
