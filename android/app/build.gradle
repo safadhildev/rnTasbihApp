@@ -60,7 +60,7 @@ react {
  * Set this to true to Run Proguard on Release builds to minify the Java bytecode.
  */
 def enableProguardInReleaseBuilds = true
-def enableSeparateBuildPerCPUArchitecture = true
+def enableSeparateBuildPerCPUArchitecture = false
 
 /**
  * The preferred build flavor of JavaScriptCore (JSC)
@@ -108,13 +108,19 @@ android {
         versionCode 2
         versionName "1.0"
         multiDexEnabled true
+        // Real devices are ARM; x86 is emulator-only. Filtering here (not via
+        // packaging excludes) is needed because the RN Gradle plugin force-includes
+        // Hermes libs for every ABI. Can't be combined with ABI splits.
+        ndk {
+            abiFilters "armeabi-v7a", "arm64-v8a"
+        }
     }
     splits {
         abi {
             reset()
             enable enableSeparateBuildPerCPUArchitecture
-            universalApk true  // If true, also generate a universal APK
-            include "armeabi-v7a", "x86", "arm64-v8a", "x86_64"
+            universalApk false  // If true, also generate a universal APK
+            include "armeabi-v7a", "arm64-v8a"
         }
     }
     aaptOptions { noCompress "tflite" }
@@ -143,7 +149,7 @@ android {
             // see https://reactnative.dev/docs/signed-apk-android.
             minifyEnabled enableProguardInReleaseBuilds
             shrinkResources true
-            proguardFiles getDefaultProguardFile("proguard-android.txt"), "proguard-rules.pro"
+            proguardFiles getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro"
         }
     }
 
