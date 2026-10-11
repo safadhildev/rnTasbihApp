@@ -1,25 +1,20 @@
-import {useNavigation} from '@react-navigation/native';
-import React, {useRef, useState} from 'react';
-import {I18nManager, Platform, StyleSheet, View} from 'react-native';
+import { useNavigation } from '@react-navigation/native';
+import React, { useRef, useState } from 'react';
+import { I18nManager, Platform, StyleSheet, View } from 'react-native';
+import { useForeground } from 'react-native-google-mobile-ads';
+import AdMobBanner from '../../components/AdMob.jsx';
 import ButtonMore from '../../components/ButtonMore.jsx';
-import {SWIPER_TYPES, Z_INDEX} from '../../components/constants.js';
-import {useLocalContext} from '../../components/context';
+import { SWIPER_TYPES, Z_INDEX } from '../../components/constants.js';
+import { useLocalContext } from '../../components/context';
 import Clicker from '../../components/Counter/Clicker.jsx';
 import Swiper from '../../components/Counter/Swiper.jsx';
 import SaveModal from '../../components/SaveModal.jsx';
 import Text from '../../components/Text.jsx';
-import {RECORDS, SETTINGS} from '../../routes/constants.js';
+import { RECORDS, SETTINGS } from '../../routes/constants.js';
 import date from '../../utils/Date.js';
 import useGlobalFucntion from '../../utils/hooks/useGlobal.js';
 import useTime from '../../utils/hooks/useTime.js';
 import themes from '../../utils/themes.js';
-import {
-  BannerAd,
-  BannerAdSize,
-  TestIds,
-  useForeground,
-} from 'react-native-google-mobile-ads';
-import {BANNER_ADD_UNIT_ID} from '@env';
 
 const Home = () => {
   const bannerRef = useRef(null);
@@ -103,46 +98,38 @@ const Home = () => {
   };
 
   return (
-    <View style={styles.container(theme)}>
-      {renderCounterByType()}
-      <SaveModal
-        visible={showSaveModal}
-        onClose={_triggerSaveModal}
-        onSave={_handleSave}
-      />
-      <View style={styles.infoContainer} pointerEvents="none">
-        <View style={styles.infoDateContainer}>
-          <Text style={styles.info(theme)}>
-            {date.getTodayDate('DD MMMM YYYY')}
-          </Text>
-          {/* <Divider direction={DIRECTION.VERTICAL} /> */}
-          <Text style={styles.info(theme, 16)}>{date.getHijriDate()}</Text>
+    <>
+      <View style={styles.container(theme)}>
+        {renderCounterByType()}
+        <SaveModal
+          visible={showSaveModal}
+          onClose={_triggerSaveModal}
+          onSave={_handleSave}
+        />
+        <View style={styles.infoContainer} pointerEvents="none">
+          <View style={styles.infoDateContainer}>
+            <Text style={styles.info(theme)}>
+              {date.getTodayDate('DD MMMM YYYY')}
+            </Text>
+            {/* <Divider direction={DIRECTION.VERTICAL} /> */}
+            <Text style={styles.info(theme, 16)}>{date.getHijriDate()}</Text>
+          </View>
+          <Text style={styles.info(theme, 16)}>{currentTime}</Text>
         </View>
-        <Text style={styles.info(theme, 16)}>{currentTime}</Text>
+        <ButtonMore
+          expand={showMore}
+          triggerExpand={_triggerExpand}
+          onSave={_triggerSaveModal}
+          onRepeat={_handleRepeat}
+          onList={_handleList}
+          onSettings={_handleSettings}
+        />
+        {isDev && (
+          <Text style={styles.infoDev(theme)}>ID: {currentData?.id}</Text>
+        )}
       </View>
-      <ButtonMore
-        expand={showMore}
-        triggerExpand={_triggerExpand}
-        onSave={_triggerSaveModal}
-        onRepeat={_handleRepeat}
-        onList={_handleList}
-        onSettings={_handleSettings}
-      />
-      {isDev && (
-        <Text style={styles.infoDev(theme)}>ID: {currentData?.id}</Text>
-      )}
-
-      <BannerAd
-        ref={bannerRef}
-        unitId={__DEV__ ? TestIds.BANNER : BANNER_ADD_UNIT_ID}
-        size={BannerAdSize.ANCHORED_ADAPTIVE_BANNER}
-        onPaid={event => {
-          if (__DEV__) {
-            console.log('Banner revenue', event.value, event.currency);
-          }
-        }}
-      />
-    </View>
+      <AdMobBanner />
+    </>
   );
 };
 

@@ -10,9 +10,10 @@ import {onSearch} from '../common';
 import {COUNTER_TYPE, STORAGE_KEYS} from '../../components/constants';
 import {HOME} from '../../routes/constants';
 import mobileAds, {MaxAdContentRating} from 'react-native-google-mobile-ads';
+import {preload as preloadInterstitial} from '../interstitial';
 
 const useGlobalFucntion = () => {
-  const {updateContext, currentData} = useLocalContext();
+  const {updateContext, currentData, theme, counterType} = useLocalContext();
 
   const _getNewCounterData = () => {
     return {
@@ -22,28 +23,38 @@ const useGlobalFucntion = () => {
       count: 0,
     };
   };
+  /**
+   * @returns {Promise<boolean>} true when the theme was actually changed
+   */
   const _handleChangeTheme = async key => {
-    if (key) {
-      try {
-        await LocalStorage.setItem(STORAGE_KEYS.THEME, key);
-        updateContext({theme: THEME_CONSTANT[key]});
-      } catch (e) {
-        throw new Error(e);
-      }
+    if (!key || THEME_CONSTANT[key] === theme) {
+      return false;
+    }
+    try {
+      await LocalStorage.setItem(STORAGE_KEYS.THEME, key);
+      updateContext({theme: THEME_CONSTANT[key]});
+      return true;
+    } catch (e) {
+      throw new Error(e);
     }
   };
 
+  /**
+   * @returns {Promise<boolean>} true when the counter type was actually changed
+   */
   const _handleChangeCounterType = async key => {
-    if (key) {
-      try {
-        await LocalStorage.setItem(STORAGE_KEYS.COUNTER_TYPE, key);
-        updateContext({
-          counterType: key,
-          currentData: _getNewCounterData(),
-        });
-      } catch (e) {
-        throw new Error(e);
-      }
+    if (!key || key === counterType) {
+      return false;
+    }
+    try {
+      await LocalStorage.setItem(STORAGE_KEYS.COUNTER_TYPE, key);
+      updateContext({
+        counterType: key,
+        currentData: _getNewCounterData(),
+      });
+      return true;
+    } catch (e) {
+      throw new Error(e);
     }
   };
 
@@ -168,11 +179,11 @@ const useGlobalFucntion = () => {
 
   const _init = async navigation => {
     try {
-      const theme = await LocalStorage.getItem(STORAGE_KEYS.THEME);
-      const counterType = await LocalStorage.getItem(STORAGE_KEYS.COUNTER_TYPE);
+      const storedTheme = await LocalStorage.getItem(STORAGE_KEYS.THEME);
+      const storedCounterType = await LocalStorage.getItem(STORAGE_KEYS.COUNTER_TYPE);
       updateContext({
-        theme: JSON.parse(theme) ?? THEME_CONSTANT.lime,
-        counterType: JSON.parse(counterType) ?? COUNTER_TYPE.CLICKER,
+        theme: JSON.parse(storedTheme) ?? THEME_CONSTANT.lime,
+        counterType: JSON.parse(storedCounterType) ?? COUNTER_TYPE.CLICKER,
         currentData: {
           date: moment().format('DD/MM/YYYY'),
           hijriDate: momentHijri().format('iYYYY/iM/iD'),
@@ -183,7 +194,7 @@ const useGlobalFucntion = () => {
 
       await _initAds();
 
-      navigation.navigate(HOME);
+      navigation.replace(HOME);
     } catch (e) {
       console.error(e);
     }
@@ -203,6 +214,7 @@ const useGlobalFucntion = () => {
         // An array of test device IDs to allow.
         testDeviceIdentifiers: ['EMULATOR'],
       });
+      preloadInterstitial();
     } catch (e) {
       console.error(`_initAds: Error >> ${e}`);
     }

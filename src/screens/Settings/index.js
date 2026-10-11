@@ -1,27 +1,37 @@
-import { BANNER_ADD_UNIT_ID } from '@env';
-import { useNavigation } from '@react-navigation/native';
-import React from 'react';
-import { ScrollView, StyleSheet, View } from 'react-native';
-import { BannerAd, BannerAdSize, TestIds } from 'react-native-google-mobile-ads';
-import BackgroundView from '../../components/BackgroundView';
+import {useNavigation} from '@react-navigation/native';
+import React, {useEffect} from 'react';
+import {ScrollView, StyleSheet, View} from 'react-native';
+import AdMobBanner from '../../components/AdMob';
 import Header from '../../components/Header';
 import Text from '../../components/Text';
+import {showIfEligible as showInterstitial} from '../../utils/interstitial';
 import themes from '../../utils/themes';
 import CounterSettings from './CounterSettings';
 import ThemeSettings from './ThemeSettings';
 
-const adUnitId = __DEV__ ? TestIds.BANNER : BANNER_ADD_UNIT_ID;
+// let the native pop animation finish before the interstitial covers the screen
+const INTERSTITIAL_DELAY_MS = 500;
 
 const Settings = () => {
   const navigation = useNavigation();
+
+  // Covers header back, Android hardware back and iOS swipe back.
+  // Only shows if a theme change marked the interstitial as pending.
+  useEffect(
+    () =>
+      navigation.addListener('beforeRemove', () => {
+        setTimeout(showInterstitial, INTERSTITIAL_DELAY_MS);
+      }),
+    [navigation],
+  );
 
   const _handleBack = () => {
     navigation.canGoBack() && navigation.goBack();
   };
 
   return (
-    <BackgroundView>
-      <View style={{flexGrow: 1}}>
+    <>
+      <View style={styles.container}>
         <Header text="Settings" onBack={_handleBack} />
         <ScrollView contentContainerStyle={styles.contentContaienr}>
           <View style={{flex: 1}}>
@@ -30,28 +40,14 @@ const Settings = () => {
           </View>
           <Text style={styles.appVersion}>v1.0.0</Text>
         </ScrollView>
-
-        <View style={styles.bannerAd}>
-          <BannerAd
-            unitId={adUnitId}
-            onAdClosed={() => console.log('closed')}
-            onPaid={event => console.log(event)}
-            size={BannerAdSize.BANNER}
-            requestOptions={{
-              requestNonPersonalizedAdsOnly: true,
-              keywords: ['islam', 'quran'],
-              networkExtras: {
-                collapsible: 'bottom',
-              },
-            }}
-          />
-        </View>
+        <AdMobBanner />
       </View>
-    </BackgroundView>
+    </>
   );
 };
 
 const styles = StyleSheet.create({
+  container: {flexGrow: 1},
   contentContaienr: {
     flex: 1,
     paddingTop: 10,

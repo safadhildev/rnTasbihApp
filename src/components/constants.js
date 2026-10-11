@@ -33,6 +33,7 @@ export const STORAGE_KEYS = {
   RECORDS: 'records',
   THEME: 'theme',
   COUNTER_TYPE: 'counterType',
+  LAST_INTERSTITIAL_AT: 'lastInterstitialAt',
 };
 
 export const HEADER_CTA = {

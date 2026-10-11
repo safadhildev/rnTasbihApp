@@ -1,5 +1,5 @@
 import React, {useEffect, useRef, useState} from 'react';
-import {Keyboard, StyleSheet, View} from 'react-native';
+import {Dimensions, Keyboard, StyleSheet, View} from 'react-native';
 import themes from '../utils/themes';
 import {zikirOptions} from '../utils/zikir';
 import Button, {BUTTON_TYPE} from './Button';
@@ -9,6 +9,8 @@ import Gap from './Gap';
 import Modal from './Modal';
 import Text from './Text';
 import {Z_INDEX} from './constants';
+
+const DEVICE_HEIGHT = Dimensions.get('window').height;
 
 const SaveModal = ({
   visible,
@@ -81,9 +83,11 @@ const SaveModal = ({
       onHideKeyboard={() => {
         setShowDropdown(false);
       }}
-      contentContainerStyle={styles.content(isEdit, showDropdown)}>
-      <View style={{flex: 1}}>
+      style={styles.modal}
+      contentContainerStyle={styles.content(isEdit)}>
+      <View style={styles.contentWrapper}>
         <Dropdown
+          dropdownTitle="Select Dhikr"
           inputRef={inputRef}
           options={zikirOptions}
           showDropdown={showDropdown}
@@ -144,17 +148,19 @@ const styles = StyleSheet.create({
     position: 'absolute',
     zIndex: Z_INDEX.OVERLAY,
   },
-  container: {
+  modal: {
     justifyContent: 'center',
-    alignItems: 'center',
-    flex: 1,
+    paddingHorizontal: 10,
+    paddingBottom: 20,
+    marginHorizontal: 0,
+    marginVertical: 0,
   },
   contentWrapper: {
     flex: 1,
   },
   text: theme => ({fontSize: 12, color: themes[theme]?.infoText}),
-  content: (isEdit, showDropdown) => ({
-    minHeight: showDropdown || isEdit ? 350 : 300,
+  content: isEdit => ({
+    minHeight: DEVICE_HEIGHT * (isEdit ? 0.4 : 0.3),
   }),
   ctaWrapper: {
     flexDirection: 'row',

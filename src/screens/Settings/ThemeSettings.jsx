@@ -7,6 +7,7 @@ import Gap from '../../components/Gap';
 import Modal from '../../components/Modal';
 import Text from '../../components/Text';
 import useGlobalFucntion from '../../utils/hooks/useGlobal';
+import {markPending as markInterstitialPending} from '../../utils/interstitial';
 import themes, {getThemes} from '../../utils/themes';
 
 const ThemeSettings = () => {
@@ -20,9 +21,17 @@ const ThemeSettings = () => {
     setShowThemeDropdown(prev => !prev);
   };
 
-  const _handleChangeTheme = val => {
-    onChangeTheme(val);
-    setShowThemeDropdown(!showThemeDropdown);
+  const _handleChangeTheme = async val => {
+    setShowThemeDropdown(false);
+    try {
+      const changed = await onChangeTheme(val);
+      if (changed) {
+        // shown when the user leaves Settings, not on the tap itself
+        markInterstitialPending();
+      }
+    } catch (e) {
+      console.error(e);
+    }
   };
 
   return (

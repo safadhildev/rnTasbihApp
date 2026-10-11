@@ -75,3 +75,7 @@ yarn-error.log
 
 # Signing keys
 *.jks
+
+# Environment variables
+.env
+.env.*

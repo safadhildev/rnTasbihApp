@@ -79,6 +79,7 @@ def app_name = "MyTasbih"
 def app_name_dev = "MyTasbih [DEV]"
 
 android {
+    namespace "com.myTasbih"
     ndkVersion rootProject.ext.ndkVersion
     buildToolsVersion rootProject.ext.buildToolsVersion
     compileSdk rootProject.ext.compileSdkVersion
@@ -121,14 +122,12 @@ android {
     flavorDimensions "env"
     productFlavors {
         dev {
-            namespace "com.myTasbih.dev"
             applicationId "com.myTasbih.dev"
             signingConfig signingConfigs.release
             dimension "env"
             resValue "string", "app_name", app_name_dev
         }
         production {
-            namespace "com.myTasbih"
             applicationId "com.myTasbih"
             signingConfig signingConfigs.release
             dimension "env"

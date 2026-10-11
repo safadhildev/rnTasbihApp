@@ -3,6 +3,11 @@ import {StyleSheet, View} from 'react-native';
 import themes from '../utils/themes';
 import {useLocalContext} from './context';
 
+/**
+ * Themed background. Rendered once at the app root (App.js) so every screen
+ * sits on the current theme's background; can also be used locally with a
+ * custom color. `opacity` only affects the background layer, not children.
+ */
 const BackgroundView = ({
   children = null,
   backgroundColor = null,
@@ -20,17 +25,11 @@ const BackgroundView = ({
         containerStyle,
       ])}>
       <View
-        style={styles.background(
-          theme,
-          backgroundColor,
-          opacity,
-          borderRadius,
-        )}>
-        {React.isValidElement(children) && (
-          <View style={StyleSheet.flatten([styles.children, style])}>
-            {children}
-          </View>
-        )}
+        pointerEvents="none"
+        style={styles.background(theme, backgroundColor, opacity)}
+      />
+      <View style={StyleSheet.flatten([styles.children, style])}>
+        {children}
       </View>
     </View>
   );
@@ -38,16 +37,14 @@ const BackgroundView = ({
 
 const styles = StyleSheet.create({
   container: borderRadius => ({
-    backgroundColor: 'blue',
     position: 'relative',
     overflow: 'hidden',
     flex: 1,
     borderRadius,
   }),
-  background: (theme, customColor, opacity, borderRadius) => ({
-    flex: 1,
+  background: (theme, customColor, opacity) => ({
+    ...StyleSheet.absoluteFillObject,
     backgroundColor: customColor ?? themes[theme]?.background,
-    borderRadius,
     opacity,
   }),
   children: {

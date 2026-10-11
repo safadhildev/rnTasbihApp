@@ -7,6 +7,7 @@ import Gap from '../../components/Gap';
 import Modal from '../../components/Modal';
 import Text from '../../components/Text';
 import useGlobalFucntion from '../../utils/hooks/useGlobal';
+import {markPending as markInterstitialPending} from '../../utils/interstitial';
 import themes, {getThemes} from '../../utils/themes';
 import {COUNTER_TYPE_ARRAY} from '../../components/constants';
 import HintIcon from '../../components/HintIcon';
@@ -22,9 +23,17 @@ const CounterSettings = () => {
     setShowDropdown(prev => !prev);
   };
 
-  const _handleChange = val => {
-    onChangeCounterType(val);
-    setShowDropdown(!showDropdown);
+  const _handleChange = async val => {
+    setShowDropdown(false);
+    try {
+      const changed = await onChangeCounterType(val);
+      if (changed) {
+        // shown when the user leaves Settings, not on the tap itself
+        markInterstitialPending();
+      }
+    } catch (e) {
+      console.error(e);
+    }
   };
 
   const _getLabel = () => {

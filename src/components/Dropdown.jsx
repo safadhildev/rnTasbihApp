@@ -7,6 +7,9 @@ import Button, {BUTTON_TYPE, ICON_POSITION} from './Button';
 import {useLocalContext} from './context';
 import Divider from './Divider';
 import Input from './Input';
+import Text from './Text';
+
+const BORDER_RADIUS = 10;
 
 const Dropdown = ({
   inputRef = null,
@@ -17,6 +20,7 @@ const Dropdown = ({
   tempValue = null,
   setTempValue = () => {},
   onTriggerDropdown = () => {},
+  dropdownTitle = null,
 }) => {
   const {theme} = useLocalContext();
   const [filteredOptions, setFilteredOptions] = useState(options);
@@ -59,9 +63,16 @@ const Dropdown = ({
   }, [selected]);
 
   const _renderItem = ({item}) => {
+    let label = item.label;
+
+    // if item is not in options, add "Create" prefix to the label
+    if (!options.find(option => option.value === item.value)) {
+      label = `Create "${item.label}"`;
+    }
+
     return (
       <Button
-        text={item.label}
+        text={label}
         type={BUTTON_TYPE.SECONDARY}
         onPress={() => {
           onChange(item);
@@ -136,6 +147,9 @@ const Dropdown = ({
 
       {showDropdown && (
         <View style={styles.dropdownModal(theme)}>
+          {dropdownTitle && (
+            <Text style={styles.dropdownTitle(theme)}>{dropdownTitle}</Text>
+          )}
           <FlatList
             data={filteredOptions}
             renderItem={_renderItem}
@@ -143,7 +157,7 @@ const Dropdown = ({
             bouncesZoom={false}
             keyboardShouldPersistTaps="handled"
             ItemSeparatorComponent={
-              <Divider width="90%" color={themes[theme]?.inputPlacholder} />
+              <Divider width="95%" color={themes[theme]?.inputPlacholder} />
             }
           />
         </View>
@@ -160,7 +174,7 @@ const styles = StyleSheet.create({
   optionsContainer: theme => ({
     minHeight: 230,
     zIndex: 999,
-    borderRadius: 20,
+    borderRadius: BORDER_RADIUS,
     borderWidth: 2,
     borderColor: themes[theme]?.inputBorder,
     backgroundColor: themes[theme]?.inputBackground,
@@ -168,15 +182,15 @@ const styles = StyleSheet.create({
   }),
   dropdown: theme => ({
     backgroundColor: themes[theme]?.inputBackground,
-    borderRadius: 20,
+    borderRadius: BORDER_RADIUS,
     minHeight: 50,
   }),
   dropdownInput: (theme, showDropdown) => ({
     backgroundColor: themes[theme]?.inputBackground,
     minHeight: 50,
-    borderRadius: 20,
-    borderBottomLeftRadius: showDropdown ? 0 : 20,
-    borderBottomRightRadius: showDropdown ? 0 : 20,
+    borderRadius: BORDER_RADIUS,
+    borderBottomLeftRadius: showDropdown ? 0 : BORDER_RADIUS,
+    borderBottomRightRadius: showDropdown ? 0 : BORDER_RADIUS,
   }),
   dropdownModal: theme => ({
     position: 'absolute',
@@ -187,12 +201,20 @@ const styles = StyleSheet.create({
     minHeight: 40,
     maxHeight: 190,
     // zIndex: 99999999,
-    borderBottomLeftRadius: 20,
-    borderBottomRightRadius: 20,
+    borderBottomLeftRadius: BORDER_RADIUS,
+    borderBottomRightRadius: BORDER_RADIUS,
     borderWidth: 2,
     borderColor: themes[theme]?.inputBorder,
     backgroundColor: themes[theme]?.inputBackground,
     overflow: 'hidden',
+  }),
+  dropdownTitle: theme => ({
+    color: themes[theme]?.infoText,
+    fontSize: 14,
+    textAlign: 'left',
+    fontWeight: '400',
+    marginVertical: 10,
+    marginHorizontal: 10,
   }),
   item: theme => ({
     minHeight: 40,
