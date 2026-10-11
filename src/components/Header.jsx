@@ -1,4 +1,4 @@
-import {ArrowLeft, FloppyDisk, MoreVert, Xmark} from 'iconoir-react-native';
+import {ArrowLeft, FloppyDisk, MoreVert, Xmark} from './icons';
 import React, {Fragment, useEffect, useState} from 'react';
 import {
   FlatList,

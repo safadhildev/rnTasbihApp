@@ -1,4 +1,4 @@
-import {NavArrowDown, NavArrowUp} from 'iconoir-react-native';
+import {NavArrowDown, NavArrowUp} from './icons';
 import React, {useEffect, useState} from 'react';
 import {FlatList, Keyboard, StyleSheet, View} from 'react-native';
 import {onSearch} from '../utils/common';
@@ -147,12 +147,14 @@ const Dropdown = ({
 
       {showDropdown && (
         <View style={styles.dropdownModal(theme)}>
-          {dropdownTitle && (
-            <Text style={styles.dropdownTitle(theme)}>{dropdownTitle}</Text>
-          )}
           <FlatList
             data={filteredOptions}
             renderItem={_renderItem}
+            ListHeaderComponent={
+              dropdownTitle && (
+                <Text style={styles.dropdownTitle(theme)}>{dropdownTitle}</Text>
+              )
+            }
             bounces={false}
             bouncesZoom={false}
             keyboardShouldPersistTaps="handled"
@@ -199,8 +201,7 @@ const styles = StyleSheet.create({
     left: 0,
     right: 0,
     minHeight: 40,
-    maxHeight: 190,
-    // zIndex: 99999999,
+    maxHeight: 210,
     borderBottomLeftRadius: BORDER_RADIUS,
     borderBottomRightRadius: BORDER_RADIUS,
     borderWidth: 2,

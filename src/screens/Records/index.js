@@ -1,6 +1,6 @@
-import { useNavigation } from '@react-navigation/native';
-import { Edit, Trash } from 'iconoir-react-native';
-import React, { useEffect, useState } from 'react';
+import {useNavigation} from '@react-navigation/native';
+import {Edit, Trash} from '../../components/icons';
+import React, {useEffect, useState} from 'react';
 import {
   BackHandler,
   FlatList,
@@ -9,20 +9,20 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import Button, { BUTTON_TYPE } from '../../components/Button';
+import Button, {BUTTON_TYPE} from '../../components/Button';
 import Checkbox from '../../components/Checkbox';
-import { DIRECTION, HEADER_CTA } from '../../components/constants';
-import { useLocalContext } from '../../components/context';
+import {DIRECTION, HEADER_CTA} from '../../components/constants';
+import {useLocalContext} from '../../components/context';
 import Divider from '../../components/Divider';
 import Gap from '../../components/Gap';
 import Header from '../../components/Header';
 import Modal from '../../components/Modal';
 import SaveModal from '../../components/SaveModal';
 import Text from '../../components/Text';
-import { onSort } from '../../utils/common';
+import {onSort} from '../../utils/common';
 import useGlobalFucntion from '../../utils/hooks/useGlobal';
 import themes from '../../utils/themes';
-import { zikirOptions } from '../../utils/zikir';
+import {zikirOptions} from '../../utils/zikir';
 import ListHeaderComponent from './ListHeaderComponent';
 
 const ListItem = ({
@@ -110,7 +110,7 @@ const ListItem = ({
         onLongPress={() => {
           if (!selectMode) {
             setSelectMode(true);
-            _onCheckItem();
+            setSelectedIds([item.id]);
           }
         }}>
         <View style={styles.item(theme)}>

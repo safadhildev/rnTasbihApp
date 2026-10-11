@@ -4,7 +4,7 @@ import animation from '../../utils/animation';
 import themes from '../../utils/themes';
 import {useLocalContext} from '../context';
 import Text from '../Text';
-import {OpenSelectHandGesture} from 'iconoir-react-native';
+import {OpenSelectHandGesture} from '../icons';
 import {Z_INDEX} from '../constants';
 
 const Clicker = ({onPress = () => {}, showMore = false}) => {

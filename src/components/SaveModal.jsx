@@ -84,10 +84,10 @@ const SaveModal = ({
         setShowDropdown(false);
       }}
       style={styles.modal}
-      contentContainerStyle={styles.content(isEdit)}>
+      contentContainerStyle={styles.content}>
       <View style={styles.contentWrapper}>
         <Dropdown
-          dropdownTitle="Select Dhikr"
+          dropdownTitle="Suggested"
           inputRef={inputRef}
           options={zikirOptions}
           showDropdown={showDropdown}
@@ -159,9 +159,9 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   text: theme => ({fontSize: 12, color: themes[theme]?.infoText}),
-  content: isEdit => ({
-    minHeight: DEVICE_HEIGHT * (isEdit ? 0.4 : 0.3),
-  }),
+  content: {
+    minHeight: DEVICE_HEIGHT * 0.4,
+  },
   ctaWrapper: {
     flexDirection: 'row',
     justifyContent: 'flex-end',

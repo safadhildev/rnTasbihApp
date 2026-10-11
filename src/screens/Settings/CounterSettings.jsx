@@ -1,4 +1,4 @@
-import {Check, NavArrowDown} from 'iconoir-react-native';
+import {Check, NavArrowDown} from '../../components/icons';
 import React, {Fragment, useState} from 'react';
 import {FlatList, StyleSheet, View} from 'react-native';
 import Button, {BUTTON_TYPE, ICON_POSITION} from '../../components/Button';
