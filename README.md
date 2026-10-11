@@ -6,7 +6,7 @@
 
 Count with a tap or a swipe, save each session, and keep a searchable history of everything you've recited, in three calm themes.
 
-[![Latest release](https://img.shields.io/github/v/release/safadhildev/rnTasbihApp?label=download&color=4caf50)](https://github.com/safadhildev/rnTasbihApp/releases/latest)
+[![Download APK](https://img.shields.io/badge/download-APK-4caf50?logo=android&logoColor=white)](https://github.com/safadhildev/rnTasbihApp/releases/latest)
 ![Android 7.0+](https://img.shields.io/badge/Android-7.0%2B-3ddc84?logo=android&logoColor=white)
 ![React Native 0.86](https://img.shields.io/badge/React%20Native-0.86-61dafb?logo=react&logoColor=white)
 ![16 KB page size ready](https://img.shields.io/badge/16%20KB%20page%20size-ready-blue)
