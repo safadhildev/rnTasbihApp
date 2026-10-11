@@ -43,7 +43,7 @@ const styles = StyleSheet.create({
     borderRadius,
   }),
   background: (theme, customColor, opacity) => ({
-    ...StyleSheet.absoluteFillObject,
+    ...StyleSheet.absoluteFill,
     backgroundColor: customColor ?? themes[theme]?.background,
     opacity,
   }),
